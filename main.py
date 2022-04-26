@@ -10,13 +10,23 @@ df = pd.read_excel(
     io='surveyResults.xlsx',
     engine='openpyxl',
     sheet_name='Sheet1',
-    skiprows=2,
+    skiprows=0,
     usecols='E:BP',
-    nrows=2,
+    #nrows=2,
 )
-print(df)
 
+#---- SIDEBAR ----
+strIdentifingColumn = "Unternehmen"
+st.sidebar.header("Bitte hier auswählen:")
+company = st.sidebar.multiselect(
+    "Unternehmen auswählen:",
+    options=df[strIdentifingColumn].unique(),
+    #default=df[strIdentifingColumn].unique,
+)
 
-daten = Path(__file__).parents[1] / 'surveyResults.xlsx'
-print(daten)
-st.write(df)
+df_selection = df.query(
+    "Unternehmen == @company"
+)
+
+#st.write(df)
+st.dataframe(df_selection)
