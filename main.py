@@ -3,7 +3,6 @@ import streamlit as st
 import plotly.express as px
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.lines import Line2D
 
 st.set_page_config(page_title="Results Dashboard",
                    page_icon=":bar_chart:",
@@ -105,7 +104,7 @@ def setup_radar():
     H1 = np.ones(len(HANGLES)) * 0.5
     H2 = np.ones(len(HANGLES))
     # Initialize layout ----------------------------------------------
-    fig = plt.figure(figsize=(14, 10))
+    fig = plt.figure(figsize=(20, 20))
     ax = fig.add_subplot(111, polar=True)
     fig.patch.set_facecolor(BG_WHITE)
     ax.set_facecolor(BG_WHITE)
