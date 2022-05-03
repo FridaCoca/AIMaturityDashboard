@@ -3,6 +3,7 @@ import streamlit as st
 import plotly.express as px
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.lines import Line2D
 
 st.set_page_config(page_title="Results Dashboard",
                    page_icon=":bar_chart:",
@@ -80,15 +81,21 @@ def setup_radar():
     Starts the radar charts
     :param var_number:
     """
-    global COLORS, companiesArray, ANGLES, fig, ax, var_number
+    global COLORS, companies_array, ANGLES, fig, ax, var_number
+    global BG_WHITE
     BG_WHITE = "#fbf9f4"
+    global BLUE
     BLUE = "#2a475e"
+    global GREY70
     GREY70 = "#b3b3b3"
+    global GREY_LIGHT
     GREY_LIGHT = "#f2efe8"
+    global COLORS
     COLORS = ["#FF5A5F", "#FFB400", "#007A87"]
     # The three species of penguins
-    companiesArray = dfP["Unternehmen"].values.tolist()
-    print("Unternehmen:", companiesArray)
+    global companies_array
+    companies_array = dfP["Unternehmen"].values.tolist()
+    print("Unternehmen:", companies_array)
 
     # The angles at which the values of the numeric variables are placed
     ANGLES = [n / var_number * 2 * np.pi for n in range(var_number)]
@@ -97,21 +104,28 @@ def setup_radar():
     X_VERTICAL_TICK_PADDING = 5
     X_HORIZONTAL_TICK_PADDING = 50
     # Angle values going from 0 to 2*pi
+    global HANGLES
     HANGLES = np.linspace(0, 2 * np.pi)
     # Used for the equivalent of horizontal lines in cartesian coordinates plots
     # The last one is also used to add a fill which acts a background color.
+    global H0
     H0 = np.zeros(len(HANGLES))
+    global H1
     H1 = np.ones(len(HANGLES)) * 0.5
+    global H2
     H2 = np.ones(len(HANGLES))
     # Initialize layout ----------------------------------------------
-    fig = plt.figure(figsize=(20, 20))
+    fig = plt.figure(figsize=(14, 10))
     ax = fig.add_subplot(111, polar=True)
+
     fig.patch.set_facecolor(BG_WHITE)
     ax.set_facecolor(BG_WHITE)
+
     # Rotate the "" 0 degrees on top.
     # There it where the first variable, avg_bill_length, will go.
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)
+
     # Setting lower limit to negative value reduces overlap
     # for values that are 0 (the minimums)
     ax.set_ylim(-0.1, 1.05)
@@ -120,11 +134,13 @@ def setup_radar():
 def plot_radar_data():
     global var_array
     # Plot lines and dots --------------------------------------------
-    for idx, variable in enumerate(var_array):
+    for idx, company_i in enumerate(companies_array):
+        print(var_array)
         values = dfP.iloc[idx].values.tolist()[1:]
+        print("val: ", values)
         values += values[:1]
-        ax.plot(ANGLES, values, c=COLORS[idx], linewidth=4, label=variable)
-        ax.scatter(ANGLES, values, s=160, c=COLORS[idx], zorder=10)
+        ax.plot(ANGLES, values, c=COLORS[idx % 3], linewidth=4, label=company_i)
+        ax.scatter(ANGLES, values, s=160, c=COLORS[idx % 3], zorder=10)
 
 
 var_array = dfP.columns.tolist()[1:]
@@ -132,4 +148,91 @@ var_number = len(var_array)
 print("var_amount", var_number)
 setup_radar()
 plot_radar_data()
+# fig
+
+# Set values for the angular axis (x)
+ax.set_xticks(ANGLES[:-1])
+ax.set_xticklabels(var_array, size=14)
+
+# Remove lines for radial axis (y)
+ax.set_yticks([])
+ax.yaxis.grid(False)
+ax.xaxis.grid(False)
+
+# Remove spines
+ax.spines["start"].set_color("none")
+ax.spines["polar"].set_color("none")
+
+# # Add custom lines for radial axis (y) at 0, 0.5 and 1.
+ax.plot(HANGLES, H0, ls=(0, (6, 6)), c=GREY70)
+ax.plot(HANGLES, H1, ls=(0, (6, 6)), c=COLORS[2])
+ax.plot(HANGLES, H2, ls=(0, (6, 6)), c=GREY70)
+
+# # Now fill the area of the circle with radius 1.
+# # This create the effect of gray background.
+ax.fill(HANGLES, H2, GREY_LIGHT)
+
+# # Custom guides for angular axis (x).
+# # These four lines do not cross the y = 0 value, so they go from
+# # the innermost circle, to the outermost circle with radius 1.
+ax.plot([0, 0], [0, 1], lw=2, c=GREY70)
+ax.plot([np.pi, np.pi], [0, 1], lw=2, c=GREY70)
+ax.plot([np.pi / 2, np.pi / 2], [0, 1], lw=2, c=GREY70)
+ax.plot([-np.pi / 2, -np.pi / 2], [0, 1], lw=2, c=GREY70)
+
+# # Add levels -----------------------------------------------------
+# # These labels indicate the values of the radial axis
+PAD = 0.05
+ax.text(-0.4, 0 + PAD, "Beginner", size=16, fontname="Roboto")
+ax.text(-0.4, 0.5 + PAD, "Fortgeschritten", size=16, fontname="Roboto")
+ax.text(-0.4, 1 + PAD, "Experte", size=16, fontname="Roboto")
+
+# Create and add legends -----------------------------------------
+# Legends are made from scratch.
+
+# Iterate through species names and colors.
+# These handles contain both markers and lines.
+handles = [
+    Line2D(
+        [], [],
+        c=color,
+        lw=3,
+        marker="o",
+        markersize=8,
+        label=variable
+    )
+    for variable, color in zip(companies_array, COLORS)
+]
+
+legend = ax.legend(
+    handles=handles,
+    loc=(1, 0),  # bottom-right
+    labelspacing=1.5,  # add space between labels
+    frameon=False  # don't put a frame
+)
+
+# Iterate through text elements and change their properties
+for text in legend.get_texts():
+    text.set_fontname("Roboto")  # Change default font
+    text.set_fontsize(16)  # Change default font size
+
+# Adjust tick label positions ------------------------------------
+# XTICKS = ax.xaxis.get_major_ticks()
+# for tick in XTICKS[0::2]:
+#     tick.set_pad(X_VERTICAL_TICK_PADDING)
+#
+# for tick in XTICKS[1::2]:
+#     tick.set_pad(X_HORIZONTAL_TICK_PADDING)
+
+# Add title ------------------------------------------------------
+fig.suptitle(
+    "Reifegrad in den verschiedenen Gestaltungsdimensionen",
+    x=0.1,
+    y=1,
+    ha="left",
+    fontsize=32,
+    fontname="Lobster Two",
+    color=BLUE,
+    weight="bold",
+)
 fig
