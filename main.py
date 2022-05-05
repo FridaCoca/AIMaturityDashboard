@@ -5,31 +5,47 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
 
-st.set_page_config(page_title="Results Dashboard",
+st.set_page_config(page_title="Ergebnisse KI Reifegradermittlung",
                    page_icon=":bar_chart:",
                    layout="wide")
 
-df = pd.read_excel(
-    io='surveyResults.xlsx',
-    engine='openpyxl',
-    sheet_name='Sheet2',
-    skiprows=0,
-    # usecols='E:BP',
-    # nrows=2,
-)
+# --- Text variables ---
+body1 = """Lieber Kunde, der erste Teil der Reifegradanalyse ist jetzt geschafft. Nach der Erhebung der Datenbasis wollen wir jetzt gemeinsam in die Analyse gehen. 
+In der Gesamtbewertung haben sie 14/20 möglichen Punkten errreicht und werden so Als KI Experte eingestuft.
+Ein KI Experte zeichnet sich dadurch aus, dass / ------------------------- Beschreibung KI Experte. ---------."""
+body2 = """ Um auf Ihr Unternehmen auf die nächste Stufe in Richtung KI Experte zu heben, können Sie folgende
+Maßnahmen ergreifen:"""
 
-dfP = pd.read_excel(
-    io='surveyResults.xlsx',
-    engine='openpyxl',
-    sheet_name='Sheet3',
-    # skiprows= 1,
-    # usecols='E:BP',
-    # nrows=2,
-)
+
+# --- Import Dataframes ---
+def import_df():
+    df = pd.read_excel(
+        io='surveyResults.xlsx',
+        engine='openpyxl',
+        sheet_name='Sheet2',
+        skiprows=0,
+        # usecols='E:BP',
+        # nrows=2,
+
+    )
+    return df
+def import_dfP():
+    dfP = pd.read_excel(
+        io='surveyResults.xlsx',
+        engine='openpyxl',
+        sheet_name='Sheet3',
+        # skiprows= 1,
+        # usecols='E:BP',
+        # nrows=2,
+    )
+    return dfP
+
+
+df = import_df()
+dfP = import_dfP()
 
 # --- Sidebar ---
 st.sidebar.header("Bitte hier auswählen:")
-
 strIdentifingColumn = "Unternehmen"
 company = st.sidebar.multiselect(
     "Unternehmen auswählen:",
@@ -47,35 +63,41 @@ dimension = st.sidebar.multiselect(
 dfSelection = df.query(
     "Unternehmen == @company & Gestaltungsdimension == @dimension"
 )
+# --- Debugging Dataframes ----
+# st.write(df)
+# st.dataframe(dfSelection)
+# st.write(dfP)
 
-st.write(df)
-st.dataframe(dfSelection)
-st.write(dfP)
+# Points by Dimension [Bar Chart]
+def plot_barchart():
+    pointsByDimensions = (
+        dfSelection.groupby(by=["Gestaltungsdimension"]).sum()[["Punkte"]]
+    )
+    figPointsDimension = px.bar(
+        pointsByDimensions,
+        x="Punkte",
+        y=pointsByDimensions.index,
+       # orientation="h",
+        title="<b>Punkte nach Gestaltungsdimension </b>",
+        color_discrete_sequence=["#0083B8"] * len(pointsByDimensions),
+        template="plotly_white",
+    )
+    st.plotly_chart(figPointsDimension)
+    DataFrame = df
+    chart_data = pd.DataFrame()
+    st.bar_chart(chart_data)
+
 
 # --- Mainpage ---
-st.title(":bar_chart: Reifegrad Dashboard")
-st.markdown("##")
+st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
+st.text(body1)
+st.header("Ergebnisse nach Gestaltungsdimensionen")
+plot_barchart()
+st.header("Handlungsempfehlungen:")
+st.text(body2)
 
 # --- Maturity Analysis ---
 total_points = dfSelection['Punkte'].sum()
-
-# Points by Dimension [Bar Chart]
-pointsByDimensions = (
-    dfSelection.groupby(by=["Gestaltungsdimension"]).sum()[["Punkte"]]
-)
-figPointsDimension = px.bar(
-    pointsByDimensions,
-    x="Punkte",
-    y=pointsByDimensions.index,
-    orientation="h",
-    title="<b>Punkte nach Gestaltungsdimension </b>",
-    color_discrete_sequence=["#0083B8"] * len(pointsByDimensions),
-    template="plotly_white",
-)
-
-st.plotly_chart(figPointsDimension)
-
-
 def setup_radar():
     """
     Starts the radar charts
@@ -114,8 +136,9 @@ def setup_radar():
     H1 = np.ones(len(HANGLES)) * 0.5
     global H2
     H2 = np.ones(len(HANGLES))
+
     # Initialize layout ----------------------------------------------
-    fig = plt.figure(figsize=(14, 10))
+    fig = plt.figure(figsize=(4, 5))
     ax = fig.add_subplot(111, polar=True)
 
     fig.patch.set_facecolor(BG_WHITE)
@@ -183,9 +206,9 @@ ax.plot([-np.pi / 2, -np.pi / 2], [0, 1], lw=2, c=GREY70)
 # # Add levels -----------------------------------------------------
 # # These labels indicate the values of the radial axis
 PAD = 0.05
-ax.text(-0.4, 0 + PAD, "Beginner", size=16, fontname="Roboto")
-ax.text(-0.4, 0.5 + PAD, "Fortgeschritten", size=16, fontname="Roboto")
-ax.text(-0.4, 1 + PAD, "Experte", size=16, fontname="Roboto")
+ax.text(-0.4, 0 + PAD, "Beginner", size=10, fontname="Roboto")
+ax.text(-0.4, 0.5 + PAD, "Fortgeschritten", size=10, fontname="Roboto")
+ax.text(-0.4, 1 + PAD, "Experte", size=10, fontname="Roboto")
 
 # Create and add legends -----------------------------------------
 # Legends are made from scratch.
@@ -214,7 +237,7 @@ legend = ax.legend(
 # Iterate through text elements and change their properties
 for text in legend.get_texts():
     text.set_fontname("Roboto")  # Change default font
-    text.set_fontsize(16)  # Change default font size
+    text.set_fontsize(10)  # Change default font size
 
 # Adjust tick label positions ------------------------------------
 # XTICKS = ax.xaxis.get_major_ticks()
@@ -230,7 +253,7 @@ fig.suptitle(
     x=0.1,
     y=1,
     ha="left",
-    fontsize=32,
+    fontsize=15,
     fontname="Lobster Two",
     color=BLUE,
     weight="bold",
