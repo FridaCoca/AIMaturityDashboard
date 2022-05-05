@@ -8,6 +8,8 @@ from matplotlib.lines import Line2D
 st.set_page_config(page_title="Ergebnisse KI Reifegradermittlung",
                    page_icon=":bar_chart:",
                    layout="wide")
+# --- Import Dataframe ---
+df = pd.read_excel('surveyResults.xlsx')
 
 # --- Text variables ---
 body1 = """Lieber Kunde, der erste Teil der Reifegradanalyse ist jetzt geschafft. Nach der Erhebung der Datenbasis wollen wir jetzt gemeinsam in die Analyse gehen. 
@@ -16,9 +18,43 @@ Ein KI Experte zeichnet sich dadurch aus, dass / ------------------------- Besch
 body2 = """ Um auf Ihr Unternehmen auf die nächste Stufe in Richtung KI Experte zu heben, können Sie folgende
 Maßnahmen ergreifen:"""
 
+# --- Variables ---
+technologie = ["Modelle und Werkzeuge: Befinden sich schon Datenanalysemodelle und / oder -Werkzeuge im Einsatz? ", "Datenhaltung und Hosting",
+               "Data Warehouse Plattform", "Datenherkunft",
+               "BI-Infrastruktur", "HolaLola"]
+data = []
 
-# --- Import Dataframes ---
-def import_df():
+# --- Hilfsfunktionen
+def assign_Dimension():
+    conditions = [
+        (df['index'] < 23),
+        (df['index'] > 23) & (df['index'] < 48),
+        (df['index'] > 48) & (df['index'] < 59),
+        (df['index'] > 59) & (df['index'] <= 63)
+    ]
+    values = ['Technologie',
+              'Daten',
+              'Organisation und Expertise',
+              'Prozesse im Bezug auf KI'
+              ]
+    df['Gestaltungsdimension'] = np.select(conditions, values)
+
+# ---- Transform Dataframe ---
+df = df.drop(columns=['ID','Startzeit', 'Fertigstellungszeit', 'E-Mail'])
+df = df.replace(to_replace={'stimme überhaupt nicht zu':'0', 'stimme nicht zu':'1', 'stimme zu':'2', 'stimme voll und ganz zu':'4'})
+df = df.transpose()
+df = df.reset_index(level=0)
+df = df.reset_index(level=0)
+
+df = df.rename({'index':'Frage', 'level_0':'index'}, axis=1)
+# df['Gestaltungsdimension'] = ''
+str = "HolaLola"
+# df.loc[df['Frage'] == str, 'Gestaltungsdimension'] = 'LOla'
+# df.loc[df['Frage'], 'Gestaltungsdimension'] = assign_Dimension(df['Frage'])
+assign_Dimension()
+st.write(df)
+
+def import_df1():
     df = pd.read_excel(
         io='surveyResults.xlsx',
         engine='openpyxl',
@@ -41,7 +77,7 @@ def import_dfP():
     return dfP
 
 
-df = import_df()
+df = import_df1()
 dfP = import_dfP()
 
 # --- Sidebar ---
