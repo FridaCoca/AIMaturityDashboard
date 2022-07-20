@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.lines import Line2D
 
-class SpiderRadar:
+# --- Classes ---
+class SpiderRadar: #todo: Debug
     def create_and_plot_radar(self):
         def setup_radar():
             """
@@ -173,10 +174,6 @@ class SpiderRadar:
         )
         return fig
 
-st.set_page_config(page_title="Ergebnisse KI Reifegradermittlung",
-                   page_icon=":bar_chart:",
-                   layout="wide")
-
 # --- Variables ---
 body1 = """Hallo Kunde, der erste Teil der Reifegradanalyse ist jetzt geschafft. Nach der Erhebung der Datenbasis wollen wir jetzt gemeinsam in die Analyse gehen. 
 In der Gesamtbewertung haben sie 14/20 möglichen Punkten errreicht und werden so Als KI Experte eingestuft.
@@ -260,7 +257,7 @@ def calculate_Punkte(df):
     df['Punkte'] = df['Punkte'].div(5).round(1)
     return df
 def transform_df(df):
-    st.write(df)
+    #st.write(df) # --- PRINT1
     df = df.drop(columns=['ID', 'Startzeit', 'Fertigstellungszeit', 'E-Mail', 'Name'])
     df = df.replace(
         to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'teils teils': '2', 'trifft eher zu': '3',
@@ -271,69 +268,54 @@ def transform_df(df):
     df = df.rename({'index': 'Frage', 'level_0': 'index'}, axis=1)
     df = assign_dimensions(df)
     df.drop([0, 1], axis=0, inplace=True)
-    st.write(df)
+    #st.write(df) # --- PRINT2
     df = calculate_Punkte(df)
-    st.write(df)
-    df2 = df.groupby(['Gestaltungsdimension'])['Punkte'].sum()
-    st.bar_chart(df2)
-    st.write(df2)
-    d = {'Gestaltungsdimension': ['Daten', 'Organisation und Expertise', 'Prozesse im Bezug auf KI', 'Technologie'],
-         'Punkte': [52, 28, 16, 45]}
-    df3 = pd.DataFrame(data=d)
-    st.write(df3)
-    df3 = assign_levels(df3)
-    st.write(df3)
-    return df3
-def drill_down():
-    # First, let's set up the multi index with 2 levels:
-    # city and store. We will create an empty frame with some
-    # column data (fruits) and pass in the multi index as index.
-    # Index names are set for accessing later
+    #st.write(df) # --- PRINT3
+    #df.drop([2,3], axis=1) #todo:WHY IS THIS NOT DROPPING?
+    df = df.filter(['Frage','Gestaltungsdimension','Punkte'], axis=1)
+    #st.write(df) # --- PRINT4
+    #df2 = assign_levels(df2) #todo: fix 1st column
+    return df
 
-    multi_index = pd.MultiIndex.from_product([
-        ['city_1', 'city_2'],
-        ['store_1', 'store_2', 'store_3'],
-    ])
-    df = pd.DataFrame(columns=['apples', 'oranges'], index=multi_index)
-    df.index.set_names(['city', 'store'], inplace=True)
-
-    # Now let's make some selectboxes for drilling up/down
-
-    levels = [
-        st.selectbox('Level 1', ['All'] + [i for i in df.index.get_level_values(0).unique()]),
-        st.selectbox('Level 2', ['All'] + [i for i in df.index.get_level_values(1).unique()])
-    ]
-
-    # We need to use slice(None) if the user selects 'All'.
-    # The specified level with 'All' will take all values in that level.
-
-    for idx, level in enumerate(levels):
-        if level == 'All':
-            levels[idx] = slice(None)
-
-    # Make a cross section with the level values and pass in the index names.
-
-    st.dataframe(
-        df.xs(
-            (levels[0], levels[1]),
-            level=['city', 'store']
-        )
-    )
-# --- Transform Dataframe
-
-#df3 = transform_df(df)
-#st.write(df3)
+# --- Dataframes and Plots
 df = pd.read_excel('survey.xlsx')
-transform_df(df)
-drill_down()
+df = transform_df(df)
+
+# Punkte nach Gestaltungsdimensionen
+df_dimensions_points = df.groupby(['Gestaltungsdimension'])['Punkte'].sum()
+
+# Punkte nach Unterkategorien
+df_tech = df[df['Gestaltungsdimension'] == 'Technologie']
+df_daten = df[df['Gestaltungsdimension'] == 'Daten']
+df_orga = df[df['Gestaltungsdimension'] == 'Organisation und Expertise']
+df_prozesse = df[df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI']
+
+df_tech = df_tech.filter(['Frage','Punkte'], axis=1)
+df_daten = df_daten.filter(['Frage','Punkte'], axis=1)
+df_orga = df_orga.filter(['Frage','Punkte'], axis=1)
+df_prozesse = df_prozesse.filter(['Frage','Punkte'], axis=1)
+
+df_tech = df_tech.groupby(['Frage'])['Punkte'].sum()
+df_daten = df_daten.groupby(['Frage'])['Punkte'].sum()
+df_orga = df_orga.groupby(['Frage'])['Punkte'].sum()
+df_prozesse = df_prozesse.groupby(['Frage'])['Punkte'].sum()
+# st.write(df_orga)
 
 # --- Mainpage ---
 st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
 st.text(body1)
+st.bar_chart(df_dimensions_points)
 st.header("Ihr Seid Ki Experten!")
 st.text(body3)
 st.header("Ergebnisse nach Gestaltungsdimensionen")
+st.bar_chart(df_tech)
+st.bar_chart(df_daten)
+st.bar_chart(df_orga)
+st.bar_chart(df_prozesse)
 st.header("Handlungsempfehlungen:")
 st.text(body3)
+
+
+
 
 
