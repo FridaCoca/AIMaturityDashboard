@@ -192,7 +192,7 @@ kategorien = list(prozesse_katerogie_punkte_dic.values())
 df_lola = pd.DataFrame()
 df_lola['Kategorie'] = punke_pro_kategorie
 df_lola['Punkte'] = kategorien
-st.write(df_lola)
+#st.write(df_lola)
 
 # SpiderMap
 df = pd.DataFrame(dict(
@@ -216,18 +216,18 @@ st.header("Ihr Seid Ki Experten!")
 st.text(body3)
 
 st.header("Ergebnisse nach Gestaltungsdimensionen")
-st.subheader("Technologie")
-st.write(px.bar(df_tech, orientation='h'))
-st.subheader("Daten")
-st.write(px.bar(df_daten, orientation='h'))
-st.subheader("Organisation")
-st.write(px.bar(df_orga, orientation='h'))
+# st.subheader("Technologie")
+# st.write(px.bar(df_tech, orientation='h'))
+# st.subheader("Daten")
+# st.write(px.bar(df_daten, orientation='h'))
+# st.subheader("Organisation")
+# st.write(px.bar(df_orga, orientation='h'))
 st.subheader("Prozesse im Bezug auf KI")
-st.write(px.bar(df_prozesse, orientation='h'))
-st.write(df_prozesse)
-st.write("----------------------------------------")
+# st.write(px.bar(df_prozesse, orientation='h'))
+# st.write(df_prozesse)
+# st.write("----------------------------------------")
 df_lola = df_lola.set_index('Kategorie')
-st.write(df_lola)
+# st.write(df_lola)
 st.write(px.bar(df_lola))
 
 st.header("Handlungsempfehlungen:")
