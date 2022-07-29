@@ -51,7 +51,6 @@ upper_bound_orga_level4 = 19
 upper_bound_orga_level5 = 24
 
 
-
 # --- Functions
 def assign_dimensions(df):
     conditions = [
@@ -67,6 +66,7 @@ def assign_dimensions(df):
               ]
     df['Gestaltungsdimension'] = np.select(conditions, values)
     return df
+
 
 def assign_levels(df3):
     conditions = [
@@ -85,11 +85,13 @@ def assign_levels(df3):
     df3['Stufe'] = np.select(conditions, values)
     return df3
 
+
 def calculate_Punkte(df):
     cols_to_sum = [0, 1, 2, 3, 4]
     df['Punkte'] = df[cols_to_sum].astype(float).sum(axis=1, skipna=True)
     df['Punkte'] = df['Punkte'].div(5).round(1)
     return df
+
 
 def transform_df(df):
     # st.write(df) # --- PRINT1
@@ -112,19 +114,20 @@ def transform_df(df):
     # df2 = assign_levels(df2) #todo: fix 1st column
     return df
 
+
 # --- Dataframes and Plots
 df = pd.read_excel('survey.xlsx')
 df = transform_df(df)
 
 # Punkte nach Gestaltungsdimensionen
 df_dimensions_points = df.groupby(['Gestaltungsdimension'])['Punkte'].sum()
-#st.write(df_dimensions_points)
+# st.write(df_dimensions_points)
 
 # Df for Spider
 df_for_spider = df_dimensions_points.reset_index()
-#st.write(df_for_spider)
+# st.write(df_for_spider)
 col_punkte = df_for_spider['Punkte'].tolist()
-#st.write(col_punkte)
+# st.write(col_punkte)
 
 # Punkte nach Unterkategorien
 df_tech = df[df['Gestaltungsdimension'] == 'Technologie']
@@ -143,11 +146,58 @@ df_orga = df_orga.groupby(['Frage'])['Punkte'].sum()
 df_prozesse = df_prozesse.groupby(['Frage'])['Punkte'].sum()
 # st.write(df_orga)
 
-#SpiderMap
 
+# Punkte auf mittlerer Hierarchieebene
+df_tech_for_mittlerer_Hierarchieebene = df_tech.reset_index()
+df_daten_for_mittlerer_Hierarchieebene = df_daten.reset_index()
+df_orga_for_mittlerer_Hierarchieebene = df_orga.reset_index()
+df_prozesse_for_mittlerer_Hierarchieebene = df_prozesse.reset_index()
+# st.write(df_prozesse_for_mittlerer_Hierarchieebene)
+col_punkte_tech = df_tech_for_mittlerer_Hierarchieebene['Punkte'].tolist()
+col_punkte_daten = df_daten_for_mittlerer_Hierarchieebene['Punkte'].tolist()
+col_punkte_orga = df_orga_for_mittlerer_Hierarchieebene['Punkte'].tolist()
+col_punkte_prozesse = df_prozesse_for_mittlerer_Hierarchieebene['Punkte'].tolist()
+# print(col_punkte_tech)
+
+prozesse_frage_punkte_dic = {
+    0: 'KI Best Practices',
+    1: 'Prozess zur Identifikation von KI-Einsatzfeldern',
+    2: 'Prozess zur Identifikation von KI-Einsatzfeldern',
+    3: 'Prozess zur Identifikation von KI-Einsatzfeldern',
+    4: 'Prozess zur Identifikation von KI-Einsatzfeldern',
+}
+prozesse_katerogie_punkte_dic = {
+    'KI Best Practices': 0,
+    'Prozess zur Identifikation von KI-Einsatzfeldern': 0
+}
+# print(prozesse_frage_punkte_dic[0])
+
+for i, p in enumerate(col_punkte_prozesse):
+    k = prozesse_frage_punkte_dic[i]
+    prozesse_katerogie_punkte_dic[k] += p
+
+# print(prozesse_katerogie_punkte_dic)
+
+# todo Durchschnitt
+
+col_punkte_prozesse_mittlere_Hierarchieebene = prozesse_katerogie_punkte_dic.values()
+print(prozesse_katerogie_punkte_dic)
+punke_pro_kategorie = list(prozesse_katerogie_punkte_dic.keys())
+kategorien = list(prozesse_katerogie_punkte_dic.values())
+# print(kategorien)
+# df_lola = pd.DataFrame(prozesse_katerogie_punkte_dic) // WHY DOES IT NOT WORK
+# print(df_lola)
+
+# create empty data frame in pandas
+df_lola = pd.DataFrame()
+df_lola['Kategorie'] = punke_pro_kategorie
+df_lola['Punkte'] = kategorien
+st.write(df_lola)
+
+# SpiderMap
 df = pd.DataFrame(dict(
     r=col_punkte,
-    theta=['Daten','Organisation und Expertise','Prozesse in Bezug auf KI',
+    theta=['Daten', 'Organisation und Expertise', 'Prozesse in Bezug auf KI',
            'Technologie']))
 fig = px.line_polar(df, r='r', theta='theta', line_close=True)
 
@@ -174,7 +224,11 @@ st.subheader("Organisation")
 st.write(px.bar(df_orga, orientation='h'))
 st.subheader("Prozesse im Bezug auf KI")
 st.write(px.bar(df_prozesse, orientation='h'))
+st.write(df_prozesse)
+st.write("----------------------------------------")
+df_lola = df_lola.set_index('Kategorie')
+st.write(df_lola)
+st.write(px.bar(df_lola))
 
 st.header("Handlungsempfehlungen:")
 st.text(body3)
-
