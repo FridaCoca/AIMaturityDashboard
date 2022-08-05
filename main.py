@@ -26,29 +26,29 @@ l_q_organisation = 41
 f_q_prozesse = 42
 l_q_prozesse = 46
 
-upper_bound_tech_level1 = 12
-upper_bound_tech_level2 = 24
-upper_bound_tech_level3 = 36
-upper_bound_tech_level4 = 48
-upper_bound_tech_level5 = 60
+upper_bound_tech_level1 = 12*5
+upper_bound_tech_level2 = 24*5
+upper_bound_tech_level3 = 36*5
+upper_bound_tech_level4 = 48*5
+upper_bound_tech_level5 = 60*5
 
-upper_bound_data_level1 = 13
-upper_bound_data_level2 = 26
-upper_bound_data_level3 = 38
-upper_bound_data_level4 = 51
-upper_bound_data_level5 = 64
+upper_bound_data_level1 = 13*5
+upper_bound_data_level2 = 26*5
+upper_bound_data_level3 = 38*5
+upper_bound_data_level4 = 51*5
+upper_bound_data_level5 = 64*5
 
-upper_bound_orga_level1 = 6
-upper_bound_orga_level2 = 13
-upper_bound_orga_level3 = 19
-upper_bound_orga_level4 = 26
-upper_bound_orga_level5 = 32
+upper_bound_orga_level1 = 6*5
+upper_bound_orga_level2 = 13*5
+upper_bound_orga_level3 = 19*5
+upper_bound_orga_level4 = 26*5
+upper_bound_orga_level5 = 32*5
 
-upper_bound_procecess_level1 = 5
-upper_bound_orga_level2 = 10
-upper_bound_orga_level3 = 14
-upper_bound_orga_level4 = 19
-upper_bound_orga_level5 = 24
+upper_bound_proceces_level1 = 5*5
+upper_bound_proceces_level2 = 10*5
+upper_bound_proceces_level3 = 14*5
+upper_bound_proceces_level4 = 19*5
+upper_bound_proceces_level5 = 24*5
 
 number_Participants = 5;
 # --- Functions
@@ -68,30 +68,40 @@ def assign_dimensions(df):
     return df
 
 
-def assign_levels(df3):
+def assign_levels():
+    data = {"Dimension": ['Daten', 'Organisation und Expertise', 'Prozesse', 'Technologie'], "Punkte": [260, 140, 80, 225]}
+    df3 = pd.DataFrame(data)
+    st.write("--------- Print in assign Levels ------")
+    st.write(df3)
+    # for col in df3.columns:
+    #     print(col)
     conditions = [
-        (df3['Punkte'] > 0) & (df3['Punkte'] <= upper_bound_tech_level1),
-        (df3['Punkte'] > upper_bound_tech_level1) & (df3['Punkte'] <= upper_bound_tech_level2),
-        (df3['Punkte'] > upper_bound_tech_level2) & (df3['Punkte'] <= upper_bound_tech_level3),
-        (df3['Punkte'] > upper_bound_tech_level3) & (df3['Punkte'] <= upper_bound_tech_level4),
-        (df3['Punkte'] > upper_bound_tech_level4) & (df3['Punkte'] <= upper_bound_tech_level5),
+        (df3["Punkte"] > 0) & (df3["Punkte"] <= upper_bound_tech_level1),
+        (df3["Punkte"] > upper_bound_tech_level1) & (df3["Punkte"] <= upper_bound_tech_level2),
+        (df3["Punkte"] > upper_bound_tech_level2) & (df3["Punkte"] <= upper_bound_tech_level3),
+        (df3["Punkte"] > upper_bound_tech_level3) & (df3["Punkte"] <= upper_bound_tech_level4),
+        (df3["Punkte"] > upper_bound_tech_level4) & (df3["Punkte"] <= upper_bound_tech_level5),
     ]
-    values = ['Level 1',
-              'Level 2',
-              'Level 3',
-              'Level 4',
-              'Level 5',
+    values = ['1',
+              '2',
+              '3',
+              '4',
+              '5',
               ]
     df3['Stufe'] = np.select(conditions, values)
+    df3 = df3.drop(columns=['Punkte'])
 
-    st.write("--------- Print in assign Levels ------")
+    st.write("--------- Print in assign Levels 2 ------")
+    st.write(df3)
     return df3
 
 
-def calculate_Punkte(df):
+def calculate_Punkte(df): #todo: fix SUM!
     cols_to_sum = [0, 1, 2, 3, 4]
-    df['Punkte'] = df[cols_to_sum].astype(float).sum(axis=1, skipna=True)
-    df['Punkte'] = df['Punkte'].div(5).round(1)
+    st.write("----- Print in calculate Punkte -----")
+    df['Punkte'] = df[cols_to_sum].astype(int).sum(axis=1, skipna=False)
+    # df['Punkte'] = df['Punkte'].div(5).round(1)
+    st.write(df)
     return df
 
 def transform_df(df):
@@ -119,10 +129,9 @@ def transform_df(df):
     st.write("----- Print 6 -----")
     st.write(df)
     # df.drop([2,3], axis=1) #todo:WHY IS THIS NOT DROPPING?
-    df = df.filter(['Frage', 'Gestaltungsdimension', 'Punkte'], axis=1)
+    # df = df.filter(['Frage', 'Gestaltungsdimension', 'Punkte'], axis=1)
     st.write("----- Print 1 -----")
     st.write(df)
-    # df2 = assign_levels(df2) #todo: fix 1st column
     return df
 
 
@@ -132,12 +141,18 @@ df = transform_df(df)
 
 # Punkte nach Gestaltungsdimensionen
 df_dimensions_points = df.groupby(['Gestaltungsdimension'])['Punkte'].sum()
-# st.write(df_dimensions_points)
+st.write("----- Punkte nach Dimension -----")
+st.write(df_dimensions_points)
+df_dimensions_points = assign_levels()
+df_dimensions_points = df_dimensions_points.set_index('Dimension')
+# df_dimensions_points = df_dimensions_points.drop('Punkte')
+
+st.write(df_dimensions_points)
 
 # Df for Spider
 df_for_spider = df_dimensions_points.reset_index()
 # st.write(df_for_spider)
-col_punkte = df_for_spider['Punkte'].tolist()
+col_punkte = df_for_spider['Stufe'].tolist()
 # st.write(col_punkte)
 
 # Punkte nach Unterkategorien
