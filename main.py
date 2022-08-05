@@ -50,7 +50,7 @@ upper_bound_orga_level3 = 14
 upper_bound_orga_level4 = 19
 upper_bound_orga_level5 = 24
 
-
+number_Participants = 5;
 # --- Functions
 def assign_dimensions(df):
     conditions = [
@@ -83,6 +83,8 @@ def assign_levels(df3):
               'Level 5',
               ]
     df3['Stufe'] = np.select(conditions, values)
+
+    st.write("--------- Print in assign Levels ------")
     return df3
 
 
@@ -92,25 +94,34 @@ def calculate_Punkte(df):
     df['Punkte'] = df['Punkte'].div(5).round(1)
     return df
 
-
 def transform_df(df):
-    # st.write(df) # --- PRINT1
+    st.write("----- Print 1 -----")
+    st.write(df) # --- PRINT1
     df = df.drop(columns=['ID', 'Startzeit', 'Fertigstellungszeit', 'E-Mail', 'Name'])
     df = df.replace(
         to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'teils teils': '2', 'trifft eher zu': '3',
                     'trifft zu': '4', 'Ich kann keine Aussage treffen.': '0'})
     df = df.transpose()
+    st.write("----- Print 2 -----")
+    st.write(df)
     df = df.reset_index(level=0)
     df = df.reset_index(level=0)
     df = df.rename({'index': 'Frage', 'level_0': 'index'}, axis=1)
+    st.write("----- Print 3 -----")
+    st.write(df)
     df = assign_dimensions(df)
+    st.write("----- Print 4 -----")
+    st.write(df)
     df.drop([0, 1], axis=0, inplace=True)
-    # st.write(df) # --- PRINT2
+    st.write("----- Print 5 -----")
+    st.write(df)
     df = calculate_Punkte(df)
-    # st.write(df) # --- PRINT3
+    st.write("----- Print 6 -----")
+    st.write(df)
     # df.drop([2,3], axis=1) #todo:WHY IS THIS NOT DROPPING?
     df = df.filter(['Frage', 'Gestaltungsdimension', 'Punkte'], axis=1)
-    # st.write(df) # --- PRINT4
+    st.write("----- Print 1 -----")
+    st.write(df)
     # df2 = assign_levels(df2) #todo: fix 1st column
     return df
 
