@@ -28,6 +28,8 @@ def calculate_average_points(df):
     for i in range(var.number_Participants):
         df = df.drop([i], axis=1)
     df['Punkte'] = df['Punkte'].div(var.number_Participants).round(1)
+    df = df.rename({'Punkte': 'Durchschnitt Punkte'}, axis=1)
+    # df[' Punkte'] = df['Punkte'].astype(float)
     st.write(df)
 
 def transform_to_question_dimension_average_points_df(df):
@@ -50,10 +52,13 @@ def transform_to_question_dimension_average_points_df(df):
     df.drop([0, 1], axis=0, inplace=True)
     # st.write("----- Print 5 -----")
     # st.write(df)
+
     df = calculate_sum_points(df)
     # st.write("----- Print 6 -----")
     # st.write(df)
     df = calculate_average_points(df)
+
+
     return df
 
 def assign_levels():
@@ -84,10 +89,12 @@ def assign_levels():
     return df3
 
 def transform_to_dimension_level_df(df):
-
+    result = df.dtypes
+    print("output1:")
+    print(result)
     df = df.groupby(['Gestaltungsdimension'])['Punkte'].sum()
-    # st.write("----- Punkte nach Dimension -----")
-    # st.write(groupBy_dimension_df)
+    st.write("----- Punkte nach Dimension -----")
+    st.write(df)
     df = assign_levels()
     # df_dimensions_points = df_dimensions_points.set_index('Dimension')
     #st.write(df)
@@ -182,6 +189,7 @@ question_dimension_df = transform_to_question_dimension_average_points_df(df)
 st.write(question_dimension_df)
 
 # Punkte nach Gestaltungsdimensionen
+
 dimension_level_df = transform_to_dimension_level_df(question_dimension_df)
 
 # Df for Spider
