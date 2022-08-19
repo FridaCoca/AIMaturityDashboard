@@ -19,6 +19,42 @@ def assign_dimensions(df):
               ]
     df['Gestaltungsdimension'] = np.select(conditions, values)
     return df
+def calculate_sum_points(df):
+    for i in range(var.number_Participants):
+      df[[i]] = df[[i]].astype(str).astype(int)
+    df['Punkte'] = df.sum(axis=1)
+    return df
+def calculate_average_points(df):
+    for i in range(var.number_Participants):
+        df = df.drop([i], axis=1)
+    df['Punkte'] = df['Punkte'].div(var.number_Participants).round(1)
+    st.write(df)
+
+def transform_to_question_dimension_average_points_df(df):
+    # st.write("----- Print 1 -----")
+    # st.write(df) # --- PRINT1
+    df = df.drop(columns=['ID', 'Startzeit', 'Fertigstellungszeit', 'E-Mail', 'Name'])
+    df = df.replace(
+        to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'teils teils': '2', 'trifft eher zu': '3',
+                    'trifft zu': '4', 'Ich kann keine Aussage treffen.': '0'})
+    df = df.transpose()
+    # st.write("----- Print 2 -----")
+    # st.write(df)
+    df = df.reset_index()
+    df = df.rename({'index': 'Frage'}, axis=1)
+    # st.write("----- Print 3 -----")
+    # st.write(df)
+    df = assign_dimensions(df)
+    # st.write("----- Print 4 -----")
+    # st.write(df)
+    df.drop([0, 1], axis=0, inplace=True)
+    # st.write("----- Print 5 -----")
+    # st.write(df)
+    df = calculate_sum_points(df)
+    # st.write("----- Print 6 -----")
+    # st.write(df)
+    df = calculate_average_points(df)
+    return df
 
 def assign_levels():
     data = {"Dimension": ['Daten', 'Organisation und Expertise', 'Prozesse', 'Technologie'], "Punkte": [260, 140, 80, 225]}
@@ -47,40 +83,8 @@ def assign_levels():
     #st.write(df3)
     return df3
 
-def calculate_Punkte(df): #todo: fix SUM!
-    cols_to_sum = [0, 1, 2, 3, 4]
-    #st.write("----- Print in calculate Punkte -----")
-    df['Punkte'] = df[cols_to_sum].astype(int).sum(axis=1, skipna=False)
-    # df['Punkte'] = df['Punkte'].div(5).round(1)
-    #st.write(df)
-    return df
-
-def transform_to_question_dimension_points_df(df):
-    st.write("----- Print 1 -----")
-    st.write(df) # --- PRINT1
-    df = df.drop(columns=['ID', 'Startzeit', 'Fertigstellungszeit', 'E-Mail', 'Name'])
-    df = df.replace(
-        to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'teils teils': '2', 'trifft eher zu': '3',
-                    'trifft zu': '4', 'Ich kann keine Aussage treffen.': '0'})
-    df = df.transpose()
-    st.write("----- Print 2 -----")
-    st.write(df)
-    df = df.reset_index()
-    df = df.rename({'index': 'Frage'}, axis=1)
-    st.write("----- Print 3 -----")
-    st.write(df)
-    df = assign_dimensions(df)
-    st.write("----- Print 4 -----")
-    st.write(df)
-    df.drop([0, 1], axis=0, inplace=True)
-    #st.write("----- Print 5 -----")
-    #st.write(df)
-    df = calculate_Punkte(df)
-    #st.write("----- Print 6 -----")
-    #st.write(df)
-    return df
-
 def transform_to_dimension_level_df(df):
+
     df = df.groupby(['Gestaltungsdimension'])['Punkte'].sum()
     # st.write("----- Punkte nach Dimension -----")
     # st.write(groupBy_dimension_df)
@@ -113,7 +117,8 @@ def transfor_to_dimension_drilldown_data(col_punkte_data):
         'Data Warehouse Plattform': 0,
         'BI Infrastruktur': 0,
     }
-    print(col_punkte_data)
+    # print(col_punkte_data)
+
     for i, p in enumerate(col_punkte_data):
         k = data_questions_points_dic[i]
         data_cat_points_dic[k] += p
@@ -150,7 +155,7 @@ def transfor_to_dimension_drilldown_orga(col_punkte_orga):
         'Bestehende KI Lösungen im Unternehmen': 0,
         'Strategie': 0,
     }
-    print(col_punkte_orga)
+    # print(col_punkte_orga)
     for i, p in enumerate(col_punkte_orga):
         k = data_questions_points_dic[i]
         data_cat_points_dic[k] += p
@@ -173,8 +178,8 @@ def transfor_to_dimension_drilldown_orga(col_punkte_orga):
 
 # --- Dataframes
 df = pd.read_excel('survey.xlsx')
-question_dimension_df = transform_to_question_dimension_points_df(df)
-# st.write(question_dimension_df)
+question_dimension_df = transform_to_question_dimension_average_points_df(df)
+st.write(question_dimension_df)
 
 # Punkte nach Gestaltungsdimensionen
 dimension_level_df = transform_to_dimension_level_df(question_dimension_df)
@@ -239,7 +244,7 @@ for i, p in enumerate(col_punkte_prozesse):
 # todo Durchschnitt
 
 col_punkte_prozesse_mittlere_Hierarchieebene = prozesse_katerogie_punkte_dic.values()
-print(prozesse_katerogie_punkte_dic)
+# print(prozesse_katerogie_punkte_dic)
 punke_pro_kategorie = list(prozesse_katerogie_punkte_dic.keys())
 kategorien = list(prozesse_katerogie_punkte_dic.values())
 # print(kategorien)
