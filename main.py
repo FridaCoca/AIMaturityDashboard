@@ -58,6 +58,205 @@ def transform_to_question_dimension_average_points_df(df):
     # st.write(df)
     df = calculate_average_points(df)
     return df
+def assign_levels_in_dimension(df):
+    conditions = [
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_daten_hosting[1]) & (df['Kategorien'] == 'Daten Hosting')),
+        ((df["Punkte"] > var.boundries_daten_hosting[1]) & (df["Punkte"] <= var.boundries_daten_hosting[2]) & (df['Kategorien'] == 'Daten Hosting')),
+        ((df["Punkte"] > var.boundries_daten_hosting[2]) & (df["Punkte"] <= var.boundries_daten_hosting[3]) & (df['Kategorien'] == 'Daten Hosting')),
+        ((df["Punkte"] > var.boundries_daten_hosting[3]) & (df["Punkte"] <= var.boundries_daten_hosting[4]) & (df['Kategorien'] == 'Daten Hosting')),
+        ((df["Punkte"] > var.boundries_daten_hosting[4]) & (df["Punkte"] <= var.boundries_daten_hosting[5]) & (df['Kategorien'] == 'Daten Hosting')),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_modelle_und_werkzeuge[1]) & (df['Kategorien'] == 'Modelle und Werkzeuge')),
+        ((df["Punkte"] > var.boundries_modelle_und_werkzeuge[1]) & (df["Punkte"] <= var.boundries_modelle_und_werkzeuge[2])) & (df['Kategorien'] == 'Modelle und Werkzeuge'),
+        ((df["Punkte"] > var.boundries_modelle_und_werkzeuge[2]) & (df["Punkte"] <= var.boundries_modelle_und_werkzeuge[3])) & (df['Kategorien'] == 'Modelle und Werkzeuge'),
+        ((df["Punkte"] > var.boundries_modelle_und_werkzeuge[3]) & (df["Punkte"] <= var.boundries_modelle_und_werkzeuge[4])) & (df['Kategorien'] == 'Modelle und Werkzeuge'),
+        ((df["Punkte"] > var.boundries_modelle_und_werkzeuge[4]) & (df["Punkte"] <= var.boundries_modelle_und_werkzeuge[5])) & (df['Kategorien'] == 'Modelle und Werkzeuge'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_data_warehouse_plattform[1]) & (df['Kategorien'] == 'Data Warehouse Plattform')),
+        ((df["Punkte"] > var.boundries_data_warehouse_plattform[1]) & (df["Punkte"] <= var.boundries_data_warehouse_plattform[2])) & (df['Kategorien'] == 'Data Warehouse Plattform'),
+        ((df["Punkte"] > var.boundries_data_warehouse_plattform[2]) & (df["Punkte"] <= var.boundries_data_warehouse_plattform[3])) & (df['Kategorien'] == 'Data Warehouse Plattform'),
+        ((df["Punkte"] > var.boundries_data_warehouse_plattform[3]) & (df["Punkte"] <= var.boundries_data_warehouse_plattform[4])) & (df['Kategorien'] == 'Data Warehouse Plattform'),
+        ((df["Punkte"] > var.boundries_data_warehouse_plattform[4]) & (df["Punkte"] <= var.boundries_data_warehouse_plattform[5])) & (df['Kategorien'] == 'Data Warehouse Plattform'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[1]) & (df['Kategorien'] == 'BI Infrastruktur')),
+        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[1]) & (df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[2])) & (df['Kategorien'] == 'BI Infrastruktur'),
+        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[2]) & (df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[3])) & (df['Kategorien'] == 'BI Infrastruktur'),
+        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[3]) & (df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[4])) & (df['Kategorien'] == 'BI Infrastruktur'),
+        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[4]) & (df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[5])) & (df['Kategorien'] == 'BI Infrastruktur'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_data_driven_culture[1]) & (df['Kategorien'] == 'Data Driven Culture')),
+        ((df["Punkte"] > var.boundries_data_driven_culture[1]) & (df["Punkte"] <= var. boundries_data_driven_culture[2]) & (
+                    df['Kategorien'] == 'Data Driven Culture')),
+        ((df["Punkte"] > var. boundries_data_driven_culture[2]) & (df["Punkte"] <= var. boundries_data_driven_culture[3]) & (
+                    df['Kategorien'] == 'Data Driven Culture')),
+        ((df["Punkte"] > var. boundries_data_driven_culture[3]) & (df["Punkte"] <= var. boundries_data_driven_culture[4]) & (
+                    df['Kategorien'] == 'Data Driven Culture')),
+        ((df["Punkte"] > var. boundries_data_driven_culture[4]) & (df["Punkte"] <= var. boundries_data_driven_culture[5]) & (
+                    df['Kategorien'] == 'Data Driven Culture')),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_datenherkunft_und_haltung[1]) & (
+                    df['Kategorien'] == 'Modelle und Werkzeuge')),
+        ((df["Punkte"] > var.boundries_datenherkunft_und_haltung[1]) & (
+                    df["Punkte"] <= var.boundries_datenherkunft_und_haltung[2])) & (
+                    df['Kategorien'] == 'Datenherkunft und -haltung'),
+        ((df["Punkte"] > var.boundries_datenherkunft_und_haltung[2]) & (
+                    df["Punkte"] <= var.boundries_datenherkunft_und_haltung[3])) & (
+                    df['Kategorien'] == 'Datenherkunft und -haltung'),
+        ((df["Punkte"] > var.boundries_datenherkunft_und_haltung[3]) & (
+                    df["Punkte"] <= var.boundries_datenherkunft_und_haltung[4])) & (
+                    df['Kategorien'] == 'Datenherkunft und -haltung'),
+        ((df["Punkte"] > var.boundries_datenherkunft_und_haltung[4]) & (
+                    df["Punkte"] <= var.boundries_datenherkunft_und_haltung[5])) & (
+                    df['Kategorien'] == 'Datenherkunft und -haltung'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_datenqualität[1]) & (
+                    df['Kategorien'] == 'Datenqualität')),
+        ((df["Punkte"] > var.boundries_datenqualität[1]) & (
+                    df["Punkte"] <= var.boundries_datenqualität[2])) & (
+                    df['Kategorien'] == 'Datenqualität'),
+        ((df["Punkte"] > var.boundries_datenqualität[2]) & (
+                    df["Punkte"] <= var.boundries_datenqualität[3])) & (
+                    df['Kategorien'] == 'Datenqualität'),
+        ((df["Punkte"] > var.boundries_datenqualität[3]) & (
+                    df["Punkte"] <= var.boundries_datenqualität[4])) & (
+                    df['Kategorien'] == 'Datenqualität'),
+        ((df["Punkte"] > var.boundries_datenqualität[4]) & (
+                    df["Punkte"] <= var.boundries_datenqualität[5])) & (
+                    df['Kategorien'] == 'Datenqualität'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_datamonitoring_governance_und_policies[1]) & (
+                    df['Kategorien'] == 'Datamonitoring, -governance und -policies')),
+        ((df["Punkte"] > var.boundries_datamonitoring_governance_und_policies[1]) & (df["Punkte"] <= var.boundries_datamonitoring_governance_und_policies[2])) & (
+                    df['Kategorien'] == 'Datamonitoring, -governance und -policies'),
+        ((df["Punkte"] > var.boundries_datamonitoring_governance_und_policies[2]) & (df["Punkte"] <= var.boundries_datamonitoring_governance_und_policies[3])) & (
+                    df['Kategorien'] == 'Datamonitoring, -governance und -policies'),
+        ((df["Punkte"] > var.boundries_datamonitoring_governance_und_policies[3]) & (df["Punkte"] <= var.boundries_datamonitoring_governance_und_policies[4])) & (
+                    df['Kategorien'] == 'Datamonitoring, -governance und -policies'),
+        ((df["Punkte"] > var.boundries_datamonitoring_governance_und_policies[4]) & (df["Punkte"] <= var.boundries_datamonitoring_governance_und_policies[5])) & (
+                    df['Kategorien'] == 'Datamonitoring, -governance und -policies'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_rechtliche_grundlagen[1]) & (
+                df['Kategorien'] == 'Rechtliche Grundlagen')),
+        ((df["Punkte"] > var.boundries_rechtliche_grundlagen[1]) & (
+                    df["Punkte"] <= var.boundries_rechtliche_grundlagen[2])) & (
+                df['Kategorien'] == 'Rechtliche Grundlagen'),
+        ((df["Punkte"] > var.boundries_rechtliche_grundlagen[2]) & (
+                    df["Punkte"] <= var.boundries_rechtliche_grundlagen[3])) & (
+                df['Kategorien'] == 'Rechtliche Grundlagen'),
+        ((df["Punkte"] > var.boundries_rechtliche_grundlagen[3]) & (
+                    df["Punkte"] <= var.boundries_rechtliche_grundlagen[4])) & (
+                df['Kategorien'] == 'Rechtliche Grundlagen'),
+        ((df["Punkte"] > var.boundries_rechtliche_grundlagen[4]) & (
+                    df["Punkte"] <= var.boundries_rechtliche_grundlagen[5])) & (
+                df['Kategorien'] == 'Rechtliche Grundlagen'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_bi_expertise[1]) & (
+                df['Kategorien'] == 'BI Expertise')),
+        ((df["Punkte"] > var.boundries_bi_expertise[1]) & (
+                df["Punkte"] <= var.boundries_bi_expertise[2])) & (
+                df['Kategorien'] == 'BI Expertise'),
+        ((df["Punkte"] > var.boundries_bi_expertise[2]) & (
+                df["Punkte"] <= var.boundries_bi_expertise[3])) & (
+                df['Kategorien'] == 'BI Expertise'),
+        ((df["Punkte"] > var.boundries_bi_expertise[3]) & (
+                df["Punkte"] <= var.boundries_bi_expertise[4])) & (
+                df['Kategorien'] == 'BI Expertise'),
+        ((df["Punkte"] > var.boundries_bi_expertise[4]) & (
+                df["Punkte"] <= var.boundries_bi_expertise[5])) & (
+                df['Kategorien'] == 'BI Expertise'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_bi_expertise[1]) & (
+                df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen')),
+        ((df["Punkte"] > var.boundries_bi_expertise[1]) & (
+                df["Punkte"] <= var.boundries_bi_expertise[2])) & (
+                df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen'),
+        ((df["Punkte"] > var.boundries_bestehende_ki_lösungen_im_unternehmen[2]) & (
+                df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[3])) & (
+                df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen'),
+        ((df["Punkte"] > var.boundries_bestehende_ki_lösungen_im_unternehmen[3]) & (
+                df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[4])) & (
+                df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen'),
+        ((df["Punkte"] > var.boundries_bestehende_ki_lösungen_im_unternehmen[4]) & (
+                df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[5])) & (
+                df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_strategie[1]) & (
+                df['Kategorien'] == 'Strategie')),
+        ((df["Punkte"] > var.boundries_strategie[1]) & (
+                df["Punkte"] <= var.boundries_strategie[2])) & (
+                df['Kategorien'] == 'Strategie'),
+        ((df["Punkte"] > var.boundries_strategie[2]) & (
+                df["Punkte"] <= var.boundries_strategie[3])) & (
+                df['Kategorien'] == 'Strategie'),
+        ((df["Punkte"] > var.boundries_strategie[3]) & (
+                df["Punkte"] <= var.boundries_strategie[4])) & (
+                df['Kategorien'] == 'Strategie'),
+        ((df["Punkte"] > var.boundries_strategie[4]) & (
+                df["Punkte"] <= var.boundries_strategie[5])) & (
+                df['Kategorien'] == 'Strategie'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_ki_best_practices[1]) & (
+                df['Kategorien'] == 'KI Best Practices')),
+        ((df["Punkte"] > var.boundries_ki_best_practices[1]) & (
+                df["Punkte"] <= var.boundries_ki_best_practices[2])) & (
+                df['Kategorien'] == 'KI Best Practices'),
+        ((df["Punkte"] > var.boundries_ki_best_practices[2]) & (
+                df["Punkte"] <= var.boundries_ki_best_practices[3])) & (
+                df['Kategorien'] == 'KI Best Practices'),
+        ((df["Punkte"] > var.boundries_ki_best_practices[3]) & (
+                df["Punkte"] <= var.boundries_ki_best_practices[4])) & (
+                df['Kategorien'] == 'KI Best Practices'),
+        ((df["Punkte"] > var.boundries_ki_best_practices[4]) & (
+                df["Punkte"] <= var.boundries_ki_best_practices[5])) & (
+                df['Kategorien'] == 'KI Best Practices'),
+
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[1]) & (
+                df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern')),
+        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[1]) & (
+                df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[2])) & (
+                df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern'),
+        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[2]) & (
+                df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[3])) & (
+                df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern'),
+        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[3]) & (
+                df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[4])) & (
+                df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern'),
+        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[4]) & (
+                df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[5])) & (
+                df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern'),
+    ]
+
+    values =[1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5,
+    1, 2, 3, 4, 5]
+
+    df['Stufe'] = np.select(conditions, values)
+    df = df.filter(['Kategorien', 'Stufe'], axis=1)
+    return df
+def transform_to_dimension_level_df(df):
+    df = df.groupby(['Gestaltungsdimension'])['Durchschnitt Punkte'].sum()
+    df = df.reset_index().rename({'Durchschnitt Punkte': 'Punkte Pro Dimension'}, axis=1)
+    df = assign_levels(df)
+    df = df.drop(['Punkte Pro Dimension'], axis=1)
+    return df
+def spidermap(df):
+    col_punkte = df['Stufe'].tolist()
+    df = pd.DataFrame(dict(
+        r=col_punkte,
+        theta=['Daten', 'Organisation und Expertise', 'Prozesse in Bezug auf Ki', 'Technologie']))
+    fig = px.line_polar(df, r='r', theta='theta', line_close=True)
+    return fig
 def assign_levels(df):
     conditions = [
         ((df["Punkte Pro Dimension"] > 0) & (df["Punkte Pro Dimension"] <= var.upper_bound_tech_level1) & (df['Gestaltungsdimension'] == 'Technologie')),
@@ -78,11 +277,11 @@ def assign_levels(df):
         ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level3) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level4)) & (df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI'),
         ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level4) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level5)) & (df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI'),
 
-        ((df["Punkte Pro Dimension"] > 0) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level1) & (df['Gestaltungsdimension'] == 'Organisation und Expertise')),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level1) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level2)) & (df['Gestaltungsdimension'] == 'Organisation und Expertise'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level2) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level3)) & (df['Gestaltungsdimension'] == 'Organisation und Expertise'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level3) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level4)) & (df['Gestaltungsdimension'] == 'Organisation und Expertise'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level4) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level5)) & (df['Gestaltungsdimension'] == 'Organisation und Expertise')
+        ((df["Punkte Pro Dimension"] > 0) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level1) & (df['Gestaltungsdimension'] == 'BI Infrastruktur')),
+        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level1) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level2)) & (df['Gestaltungsdimension'] == 'BI Infrastruktur'),
+        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level2) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level3)) & (df['Gestaltungsdimension'] == 'BI Infrastruktur'),
+        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level3) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level4)) & (df['Gestaltungsdimension'] == 'BI Infrastruktur'),
+        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level4) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level5)) & (df['Gestaltungsdimension'] == 'BI Infrastruktur')
     ]
 
     values = [1,2,3,4,5,
@@ -92,19 +291,6 @@ def assign_levels(df):
 
     df['Stufe'] = np.select(conditions, values)
     return df
-def transform_to_dimension_level_df(df):
-    df = df.groupby(['Gestaltungsdimension'])['Durchschnitt Punkte'].sum()
-    df = df.reset_index().rename({'Durchschnitt Punkte': 'Punkte Pro Dimension'}, axis=1)
-    df = assign_levels(df)
-    df = df.drop(['Punkte Pro Dimension'], axis=1)
-    return df
-def spidermap(df):
-    col_punkte = df['Stufe'].tolist()
-    df = pd.DataFrame(dict(
-        r=col_punkte,
-        theta=['Daten', 'Organisation und Expertise', 'Prozesse in Bezug auf Ki', 'Technologie']))
-    fig = px.line_polar(df, r='r', theta='theta', line_close=True)
-    return fig
 def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_dic):
     df_kat = main_df[main_df['Gestaltungsdimension'] == 'Technologie']
     df_kat = df_kat.filter(['Frage', 'Durchschnitt Punkte'], axis=1)
@@ -122,39 +308,33 @@ def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_d
     points_by_subkat_df = pd.DataFrame()
     points_by_subkat_df['Kategorien'] = points_by_subkat
     points_by_subkat_df['Punkte'] = subkats
-
-    bar_chart_dimension_level_df = px.bar(points_by_subkat_df, x='Kategorien', y='Punkte')
-
+    points_by_subkat_df = assign_levels_in_dimension(points_by_subkat_df)
+    #-----------------------
+    st.write(points_by_subkat_df)
+    bar_chart_dimension_level_df = px.bar(points_by_subkat_df, x='Kategorien', y='Stufe')
     st.write(bar_chart_dimension_level_df)
+    #-----------------------
     return points_by_subkat_df
 
-# --- Dataframes and Spidermap for Dimension Level
+# --- dataframes and spidermap for dimension-Level-representation
 df = pd.read_excel('survey.xlsx')
 df = transform_to_question_dimension_average_points_df(df)
 dimension_level_df = transform_to_dimension_level_df(df)
-st.write('----- dimension_level_df -----')
 bar_chart_dimension_level_df = px.bar(dimension_level_df, x ='Gestaltungsdimension', y = 'Stufe')
 spider_dimension_level = spidermap(dimension_level_df)
 
-# ----------------
-st.write(bar_chart_dimension_level_df)
-spider_dimension_level
+# --- dataframes for dimension drilldown
 transform_to_dimension_drilldown(df, dics.questions_points_tech, dics.cat_points_tech)
-
+st.write()
 
 # --- Layout ---
 
 st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
 st.markdown(textbausteine.intro)
-# st.write("ALTERNATIVE 1")
-# bar_chart_1 = px.bar(dimension_level_df)
-# st.write(bar_chart_1)
-# st.write("ALTERNATIVE 2")
-# st.bar_chart(dimension_level_df)
-# st.write("ALTERNATIV 3")
 
 st.header("KI-Reife über die 4 Dimensionen")
 st.markdown(textbausteine.four_dimensions_intro)
+spider_dimension_level
 
 
 st.header("KI-Reife innerhalb der Dimensionen ")

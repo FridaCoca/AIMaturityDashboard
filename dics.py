@@ -22,6 +22,33 @@ cat_points_tech = {
         'BI Infrastruktur': 0,
     }
 
+data_questions_points_data = {
+        0: 'Data Driven Culture',
+        1: 'Data Driven Culture',
+        2: 'Data Driven Culture',
+        3: 'Data Driven Culture',
+        4: 'Datenherkunft und -haltung',
+        5: 'Datenherkunft und -haltung',
+        6: 'Datenherkunft und -haltung',
+        7: 'Datenqualität',
+        8: 'Datenqualität',
+        9: 'Datenqualität',
+        10: 'Datenqualität',
+        11: 'Datamonitoring, -governance und -policies',
+        12: 'Datamonitoring, -governance und -policies',
+        13: 'Datamonitoring, -governance und -policies',
+        14: 'Datamonitoring, -governance und -policies',
+        15: 'Rechtliche Grundlagen',
+        16: 'Rechtliche Grundlagen'
+    }
+data_cat_points_orga = {
+        'Data Driven Culture': 0,
+        'Datenherkunft und -haltung': 0,
+        'Datenqualität': 0,
+        'Datamonitoring, -governance und -policies' : 0,
+        'Rechtliche Grundlagen' : 0
+    }
+
 data_questions_points_orga = {
         0: 'BI Expertise',
         1: 'BI Expertise',
@@ -33,6 +60,7 @@ data_questions_points_orga = {
         7: 'Strategie',
         8: 'Strategie',
     }
+
 data_cat_points_orga = {
         'BI Expertise': 0,
         'Bestehende KI Lösungen im Unternehmen': 0,
