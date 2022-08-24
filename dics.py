@@ -22,7 +22,7 @@ cat_points_tech = {
         'BI Infrastruktur': 0,
     }
 
-data_questions_points_data = {
+questions_points_data = {
         0: 'Data Driven Culture',
         1: 'Data Driven Culture',
         2: 'Data Driven Culture',
@@ -41,15 +41,15 @@ data_questions_points_data = {
         15: 'Rechtliche Grundlagen',
         16: 'Rechtliche Grundlagen'
     }
-data_cat_points_orga = {
+cat_points_data = {
         'Data Driven Culture': 0,
         'Datenherkunft und -haltung': 0,
         'Datenqualität': 0,
-        'Datamonitoring, -governance und -policies' : 0,
-        'Rechtliche Grundlagen' : 0
+        'Datamonitoring, -governance und -policies': 0,
+        'Rechtliche Grundlagen': 0,
     }
 
-data_questions_points_orga = {
+questions_points_orga = {
         0: 'BI Expertise',
         1: 'BI Expertise',
         2: 'BI Expertise',
@@ -60,21 +60,20 @@ data_questions_points_orga = {
         7: 'Strategie',
         8: 'Strategie',
     }
-
-data_cat_points_orga = {
+cat_points_orga = {
         'BI Expertise': 0,
         'Bestehende KI Lösungen im Unternehmen': 0,
         'Strategie': 0,
     }
 
-data_questions_points_processes = {
+questions_points_processes = {
     0: 'KI Best Practices',
     1: 'Prozess zur Identifikation von KI-Einsatzfeldern',
     2: 'Prozess zur Identifikation von KI-Einsatzfeldern',
     3: 'Prozess zur Identifikation von KI-Einsatzfeldern',
     4: 'Prozess zur Identifikation von KI-Einsatzfeldern',
 }
-data_cat_points_processes = {
+cat_points_processes = {
     'KI Best Practices': 0,
     'Prozess zur Identifikation von KI-Einsatzfeldern': 0
 }

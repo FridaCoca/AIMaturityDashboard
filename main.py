@@ -277,11 +277,11 @@ def assign_levels(df):
         ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level3) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level4)) & (df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI'),
         ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level4) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level5)) & (df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI'),
 
-        ((df["Punkte Pro Dimension"] > 0) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level1) & (df['Gestaltungsdimension'] == 'BI Infrastruktur')),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level1) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level2)) & (df['Gestaltungsdimension'] == 'BI Infrastruktur'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level2) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level3)) & (df['Gestaltungsdimension'] == 'BI Infrastruktur'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level3) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level4)) & (df['Gestaltungsdimension'] == 'BI Infrastruktur'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level4) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level5)) & (df['Gestaltungsdimension'] == 'BI Infrastruktur')
+        ((df["Punkte Pro Dimension"] > 0) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level1) & (df['Gestaltungsdimension'] == 'Organisation und Expertise')),
+        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level1) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level2)) & (df['Gestaltungsdimension'] == 'Organisation und Expertise'),
+        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level2) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level3)) & (df['Gestaltungsdimension'] == 'Organisation und Expertise'),
+        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level3) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level4)) & (df['Gestaltungsdimension'] == 'Organisation und Expertise'),
+        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level4) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level5)) & (df['Gestaltungsdimension'] == 'Organisation und Expertise')
     ]
 
     values = [1,2,3,4,5,
@@ -291,12 +291,10 @@ def assign_levels(df):
 
     df['Stufe'] = np.select(conditions, values)
     return df
-def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_dic):
-    df_kat = main_df[main_df['Gestaltungsdimension'] == 'Technologie']
+def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_dic, dimension):
+    df_kat = main_df[main_df['Gestaltungsdimension'] == dimension]
     df_kat = df_kat.filter(['Frage', 'Durchschnitt Punkte'], axis=1)
     col_punkte_kat = df_kat['Durchschnitt Punkte'].tolist()
-    questions_points_dic
-    cat_points_dic
 
     for i, p in enumerate(col_punkte_kat):
         k = questions_points_dic[i]
@@ -309,11 +307,6 @@ def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_d
     points_by_subkat_df['Kategorien'] = points_by_subkat
     points_by_subkat_df['Punkte'] = subkats
     points_by_subkat_df = assign_levels_in_dimension(points_by_subkat_df)
-    #-----------------------
-    st.write(points_by_subkat_df)
-    bar_chart_dimension_level_df = px.bar(points_by_subkat_df, x='Kategorien', y='Stufe')
-    st.write(bar_chart_dimension_level_df)
-    #-----------------------
     return points_by_subkat_df
 
 # --- dataframes and spidermap for dimension-Level-representation
@@ -324,11 +317,13 @@ bar_chart_dimension_level_df = px.bar(dimension_level_df, x ='Gestaltungsdimensi
 spider_dimension_level = spidermap(dimension_level_df)
 
 # --- dataframes for dimension drilldown
-transform_to_dimension_drilldown(df, dics.questions_points_tech, dics.cat_points_tech)
-st.write()
+tech_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_tech, dics.cat_points_tech, 'Technologie')
+data_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_data, dics.cat_points_data, 'Daten')
+processes_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_processes, dics.cat_points_processes, 'Prozesse im Bezug auf KI')
+orga_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_orga, dics.cat_points_orga, 'Organisation und Expertise')
+
 
 # --- Layout ---
-
 st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
 st.markdown(textbausteine.intro)
 
@@ -336,43 +331,24 @@ st.header("KI-Reife über die 4 Dimensionen")
 st.markdown(textbausteine.four_dimensions_intro)
 spider_dimension_level
 
-
 st.header("KI-Reife innerhalb der Dimensionen ")
 st.markdown(textbausteine.each_dimension_intro)
-# st.subheader("Technologie")
-# st.write(px.bar(df_tech, orientation='h'))
-# st.subheader("Daten")
-# st.write(px.bar(df_daten, orientation='h'))
-# st.subheader("Organisation")
-# st.write(px.bar(df_orga, orientation='h'))
+
 st.subheader("Technologie")
+st.write(px.bar(tech_drilldown_df,  x='Kategorien', y='Stufe'))
 st.markdown(textbausteine.tech_intro)
-# st.write(px.bar(df_prozesse, orientation='h'))
-# st.write(df_prozesse)
-# st.write("----------------------------------------")
-# st.write(df_lola_tech)
-df_lola_tech = df_lola_tech.set_index('Kat')
-st.write(px.bar(df_lola_tech))
 st.markdown(textbausteine.tech_level1)
 
 st.subheader("Daten")
+st.write(px.bar(data_drilldown_df,  x='Kategorien', y='Stufe'))
 st.markdown(textbausteine.description_daten)
-df_data_drilldown = df_data_drilldown.set_index('Kat')
-st.write(px.bar(df_data_drilldown))
 st.markdown(textbausteine.description_daten_level1)
 
-st.subheader("Prozesse im Bezug auf KI")
-# st.write(px.bar(df_prozesse, orientation='h'))
-# st.write(df_prozesse)
-# st.write("----------------------------------------")
-df_lola = df_lola.set_index('Kategorie')
-# st.write(df_lola)
-st.write(px.bar(df_lola))
-
 st.subheader("Organisation und Expertise")
-st.write(px.bar(df_orga_drilldown))
+st.write(px.bar(orga_drilldown_df,  x='Kategorien', y='Stufe'))
 
-
+st.subheader("Prozesse im Bezug auf KI")
+st.write(px.bar(processes_drilldown_df,  x='Kategorien', y='Stufe'))
 
 st.header("Handlungsempfehlungen:")
 st.markdown(textbausteine.handlungsempf)
