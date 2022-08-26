@@ -306,7 +306,6 @@ def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_d
     points_by_subkat_df = pd.DataFrame()
     points_by_subkat_df['Kategorien'] = points_by_subkat
     points_by_subkat_df['Punkte'] = subkats
-    st.write(points_by_subkat_df)
     points_by_subkat_df = assign_levels_in_dimension(points_by_subkat_df)
     return points_by_subkat_df
 
@@ -347,7 +346,6 @@ st.markdown(textbausteine.description_daten_level1)
 
 st.subheader("Organisation und Expertise")
 st.markdown(textbausteine.orga_description)
-st.write(orga_drilldown_df)
 st.write(px.bar(orga_drilldown_df,  x='Kategorien', y='Stufe'))
 
 st.subheader("Prozesse im Bezug auf KI")
