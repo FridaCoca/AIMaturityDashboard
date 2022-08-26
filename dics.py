@@ -55,10 +55,9 @@ questions_points_orga = {
         2: 'BI Expertise',
         3: 'Bestehende KI Lösungen im Unternehmen',
         4: 'Bestehende KI Lösungen im Unternehmen',
-        5: 'Bestehende KI Lösungen im Unternehmen',
+        5: 'Strategie',
         6: 'Strategie',
         7: 'Strategie',
-        8: 'Strategie',
     }
 cat_points_orga = {
         'BI Expertise': 0,

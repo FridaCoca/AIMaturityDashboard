@@ -165,10 +165,10 @@ def assign_levels_in_dimension(df):
                 df["Punkte"] <= var.boundries_bi_expertise[5])) & (
                 df['Kategorien'] == 'BI Expertise'),
 
-        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_bi_expertise[1]) & (
+        ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[1]) & (
                 df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen')),
-        ((df["Punkte"] > var.boundries_bi_expertise[1]) & (
-                df["Punkte"] <= var.boundries_bi_expertise[2])) & (
+        ((df["Punkte"] > var.boundries_bestehende_ki_lösungen_im_unternehmen[1]) & (
+                df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[2])) & (
                 df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen'),
         ((df["Punkte"] > var.boundries_bestehende_ki_lösungen_im_unternehmen[2]) & (
                 df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[3])) & (
@@ -306,6 +306,7 @@ def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_d
     points_by_subkat_df = pd.DataFrame()
     points_by_subkat_df['Kategorien'] = points_by_subkat
     points_by_subkat_df['Punkte'] = subkats
+    st.write(points_by_subkat_df)
     points_by_subkat_df = assign_levels_in_dimension(points_by_subkat_df)
     return points_by_subkat_df
 
@@ -335,19 +336,22 @@ st.header("KI-Reife innerhalb der Dimensionen ")
 st.markdown(textbausteine.each_dimension_intro)
 
 st.subheader("Technologie")
+st.markdown(textbausteine.tech_description)
 st.write(px.bar(tech_drilldown_df,  x='Kategorien', y='Stufe'))
-st.markdown(textbausteine.tech_intro)
 st.markdown(textbausteine.tech_level1)
 
 st.subheader("Daten")
+st.markdown(textbausteine.daten_description)
 st.write(px.bar(data_drilldown_df,  x='Kategorien', y='Stufe'))
-st.markdown(textbausteine.description_daten)
 st.markdown(textbausteine.description_daten_level1)
 
 st.subheader("Organisation und Expertise")
+st.markdown(textbausteine.orga_description)
+st.write(orga_drilldown_df)
 st.write(px.bar(orga_drilldown_df,  x='Kategorien', y='Stufe'))
 
 st.subheader("Prozesse im Bezug auf KI")
+st.markdown(textbausteine.processes_description)
 st.write(px.bar(processes_drilldown_df,  x='Kategorien', y='Stufe'))
 
 st.header("Handlungsempfehlungen:")
