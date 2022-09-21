@@ -7,6 +7,8 @@ import textbausteine
 import variables as var
 import dics as dics
 
+import report_text_modules as rtm
+
 # --- Functions
 def assign_dimensions(df):
     conditions = [
@@ -308,6 +310,19 @@ def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_d
     points_by_subkat_df['Punkte'] = subkats
     points_by_subkat_df = assign_levels_in_dimension(points_by_subkat_df)
     return points_by_subkat_df
+def create_List(main_df, dimension ):
+    df_kat = main_df[main_df['Gestaltungsdimension'] == dimension]
+    df_kat = df_kat.filter(['Frage', 'Durchschnitt Punkte'], axis=1)
+    col_frage_punkte = df_kat['Durchschnitt Punkte'].tolist()
+    return col_frage_punkte
+def create_text(col_frage_punkte):
+    text = ''
+    i = 0
+    rtm.test_orga_kategorie
+    for x in rtm.test_orga_kategorie.statements:
+        if col_frage_punkte[i] >= 2 : text + (x.get_text(2))
+    return text
+
 
 # --- dataframes and spidermap for dimension-Level-representation
 df = pd.read_excel('survey.xlsx')
@@ -322,6 +337,14 @@ data_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_d
 processes_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_processes, dics.cat_points_processes, 'Prozesse im Bezug auf KI')
 orga_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_orga, dics.cat_points_orga, 'Organisation und Expertise')
 
+
+##############
+test_List_orga = create_List(df, 'Organisation und Expertise')
+st.write('---------------------')
+st.write(test_List_orga)
+text_Orga = create_text(test_List_orga)
+st.write(text_Orga)
+st.write('---------------------')
 
 # --- Layout ---
 st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
