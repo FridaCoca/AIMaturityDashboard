@@ -10,6 +10,7 @@ import dics as dics
 import report_text_modules as rtm
 
 # --- Functions
+from block_statement import BlockStatement
 from category import CategoryName
 
 
@@ -490,13 +491,11 @@ st.write(px.bar(processes_drilldown_df, x='Kategorien', y='Stufe'))
 st.header("Handlungsempfehlungen:")
 st.markdown(textbausteine.handlungsempf)
 
-print(rtm.binaryCategory.get_statement_result([
-    1, 2, 3, 4, 5, 6, 7
-]))
-print(rtm.blockCategory.get_statement_result([
-    1, 2, 3, 4, 5, 6, 7
-]))
+# Binary
+print(rtm.binaryCategory.get_statement_result([1, 2, 3, 4, 5, 6, 7]))
 
-print(
-    get_category_points(CategoryName.DataLegal)
-)
+# Block
+statement_category_name = rtm.blockCategory.statements[0].category_name
+category_points = get_category_points(statement_category_name)
+print(category_points)
+print(rtm.blockCategory.get_statement_result([category_points]))
