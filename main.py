@@ -9,8 +9,10 @@ import dics as dics
 
 import report_text_modules as rtm
 
-
 # --- Functions
+from category import CategoryName
+
+
 def assign_dimensions(df):
     conditions = [
         (df.index >= var.f_q_technologie) & (df.index <= var.l_q_technologie),
@@ -412,21 +414,18 @@ def create_List(main_df, dimension):
     return col_frage_punkte
 
 
-def create_text(col_frage_punkte: [], kategorie : rtm.Text_Kategorie):
-    text = ""
-    i = 0
-    for x in kategorie.statements:
-        if col_frage_punkte[i] >= 2:
-            text += (x.get_text(2))
-        i += 1
-    return text
-
-
-def create_text2():
-    stufe = data_drilldown_df.loc[data_drilldown_df.Kategorien == 'Data Driven Culture', 'Stufe'].tolist()
-    text = rtm.test_data_data_driven_culture.statements.get_text(stufe)
-    print('------------' + text)
-    return
+# def create_text(col_frage_punkte: [], kategorie : rtm.Text_Kategorie):
+#     text = ""
+#     i = 0
+#     for x in kategorie.statements:
+#         if col_frage_punkte[i] >= 2:
+#             text += (x.get_text(2))
+#         i += 1
+#     return text
+#
+#
+def get_category_points(category_name: CategoryName):
+    return data_drilldown_df.loc[data_drilldown_df.Kategorien == category_name.value, 'Stufe'].tolist()[0]
 
 
 # --- dataframes and spidermap for dimension-Level-representation
@@ -445,7 +444,7 @@ processes_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_poi
 orga_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_orga, dics.cat_points_orga,
                                                      'Organisation und Expertise')
 st.write(data_drilldown_df)
-create_text2()
+# create_text2()
 
 # --- points_dimension_lists for the paragraph
 points_orga_list = create_List(df, 'Organisation und Expertise')
@@ -455,8 +454,8 @@ points_tech_list = create_List(df, 'Technologie')
 points_processes_list = create_List(df, 'Organisation und Expertise')
 st.write('---------------------')
 st.write(points_orga_list)
-text_Orga = create_text(points_orga_list, rtm.test_kategorie)
-st.write(text_Orga)
+# text_Orga = create_text(points_orga_list, rtm.test_kategorie)
+# st.write(text_Orga)
 st.write('---------------------')
 
 # --- Layout ---
@@ -490,3 +489,14 @@ st.write(px.bar(processes_drilldown_df, x='Kategorien', y='Stufe'))
 
 st.header("Handlungsempfehlungen:")
 st.markdown(textbausteine.handlungsempf)
+
+print(rtm.binaryCategory.get_statement_result([
+    1, 2, 3, 4, 5, 6, 7
+]))
+print(rtm.blockCategory.get_statement_result([
+    1, 2, 3, 4, 5, 6, 7
+]))
+
+print(
+    get_category_points(CategoryName.DataLegal)
+)
