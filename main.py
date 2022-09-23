@@ -444,7 +444,7 @@ processes_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_poi
                                                           dics.cat_points_processes, 'Prozesse im Bezug auf KI')
 orga_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_orga, dics.cat_points_orga,
                                                      'Organisation und Expertise')
-st.write(data_drilldown_df)
+
 # create_text2()
 
 # --- points_dimension_lists for the paragraph
@@ -454,7 +454,6 @@ points_tech_list = create_List(df, 'Vision, Strategie und Expertise')
 points_tech_list = create_List(df, 'Technologie')
 points_processes_list = create_List(df, 'Organisation und Expertise')
 st.write('---------------------')
-st.write(points_orga_list)
 # text_Orga = create_text(points_orga_list, rtm.test_kategorie)
 # st.write(text_Orga)
 st.write('---------------------')
@@ -488,8 +487,6 @@ st.subheader("Prozesse im Bezug auf KI")
 st.markdown(textbausteine.processes_description)
 st.write(px.bar(processes_drilldown_df, x='Kategorien', y='Stufe'))
 
-st.header("Handlungsempfehlungen:")
-st.markdown(textbausteine.handlungsempf)
 
 # Binary
 print(rtm.binaryCategory.get_statement_result([1, 2, 3, 4, 5, 6, 7]))
