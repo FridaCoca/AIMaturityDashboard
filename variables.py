@@ -1,5 +1,5 @@
 # --- Variables ---
-number_Participants = 1;
+number_Participants = 5;
 # indices for questions to assign dimension
 f_q_technologie = 2
 l_q_technologie = 16
