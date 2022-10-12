@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-form_results
+form_results/*.xlsx
 # Distribution / packaging
 .Python
 build/

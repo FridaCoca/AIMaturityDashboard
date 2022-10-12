@@ -1,4 +1,3 @@
-import csv
 from pathlib import PurePath
 
 from openpyxl import Workbook
@@ -20,20 +19,8 @@ def download_list(list_name, export_type, dir_path, file_name):
     sp_list = SharePointRemoteDataSource().get_list(list_name)
     if export_type == 'Excel':
         save_to_excel(sp_list, dir_path, file_name)
-    elif export_type == 'CSV':
-        save_to_csv(sp_list, dir_path, file_name)
     else:
         print('Export type is not a value type')
-
-
-def save_to_csv(list_items, dir_path, file_name):
-    dir_file_path = PurePath(dir_path, file_name)
-    with open(dir_file_path, 'w', newline='\n', encoding='utf-8') as f:
-        header = list_items[0].properties.keys()
-        w = csv.DictWriter(f, header)
-        w.writeheader()
-        for item in list_items:
-            w.writerow(item.properties)
 
 
 def save_to_excel(list_items, dir_path, file_name):
