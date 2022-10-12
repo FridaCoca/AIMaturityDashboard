@@ -433,7 +433,7 @@ def get_category_points(category_name: CategoryName):
     return data_drilldown_df.loc[data_drilldown_df.Kategorien == category_name.value, 'Stufe'].tolist()[0]
 
 
-file = "form_results/previsionz_results.xlsx"
+file = "survey.xlsx"
 
 # --- dataframes and spidermap for dimension-Level-representation
 df = pd.read_excel(file)
