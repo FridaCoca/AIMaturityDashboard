@@ -434,9 +434,10 @@ def get_category_points(category_name: CategoryName):
 
 
 file = "survey.xlsx"
+file2 = "form_results/previsionz_results.xlsx"
 
 # --- dataframes and spidermap for dimension-Level-representation
-dfTest = pd.read_excel("previsionz_results.xlsx")
+dfTest = pd.read_excel(file2)
 st.write(dfTest)
 df = pd.read_excel(file)
 df = transform_to_question_dimension_average_points_df(df)
