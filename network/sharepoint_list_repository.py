@@ -27,6 +27,9 @@ def save_to_excel(list_items, dir_path, file_name):
     dir_file_path = PurePath(dir_path, file_name)
     wb = Workbook()
     ws = wb.active
+    if len(list_items) == 0:
+        print("no list found")
+        return
     # list of header name from SharePoint List
     header = list_items[0].properties.keys()
     # write headers on first row

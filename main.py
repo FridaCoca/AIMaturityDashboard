@@ -1,3 +1,5 @@
+from os.path import exists
+
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -10,13 +12,12 @@ import variables as var
 from category import CategoryName
 from network.sharepoint_list_repository import download_list
 
-
-# download_list(
-#     list_name="test_results",
-#     export_type="Excel",
-#     dir_path="./form_results",
-#     file_name="previsionz_results.xlsx"
-# )
+download_list(
+    list_name="test_results",
+    export_type="Excel",
+    dir_path="./form_results",
+    file_name="previsionz_results.xlsx"
+)
 
 
 def assign_dimensions(df):
@@ -49,15 +50,19 @@ def calculate_average_points(df):
     df = df.rename({'Punkte': 'Durchschnitt Punkte'}, axis=1)
     return df
 
+
 def transform_to_question_dimension_average_points_df(df):
     # st.write("----- Print 1 -----")
     # st.write(df) # --- PRINT1
     # df = df.drop(columns=['ID', 'Startzeit', 'Fertigstellungszeit', 'E-Mail', 'Name'])
-    df = df.drop(columns=['FileSystemObjectType', 'Id', 'ServerRedirectedEmbedUri', 'ServerRedirectedEmbedUrl', 'ID', 'ContentTypeId','Title','Modified','Created','AuthorId', 'EditorId',
-                          'OData__UIVersionString','Attachments','GUID','ComplianceAssetId','field_1', 'field_3','field_4','field_5','field_6'])
+    df = df.drop(columns=['FileSystemObjectType', 'Id', 'ServerRedirectedEmbedUri', 'ServerRedirectedEmbedUrl', 'ID',
+                          'ContentTypeId', 'Title', 'Modified', 'Created', 'AuthorId', 'EditorId',
+                          'OData__UIVersionString', 'Attachments', 'GUID', 'ComplianceAssetId', 'field_1', 'field_3',
+                          'field_4', 'field_5', 'field_6'])
     # st.write(df)
     df = df.replace(
-        to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'trifft eher  nicht zu': '1', 'teils teils': '2', 'trifft eher zu': '3',
+        to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'trifft eher  nicht zu': '1',
+                    'teils teils': '2', 'trifft eher zu': '3',
                     'trifft zu': '4', 'Ich kann keine Aussage treffen.': '0', '<NA>': '0'})
     df = df.transpose()
     # st.write("----- Print 2 -----")
@@ -436,17 +441,15 @@ def get_category_points(category_name: CategoryName):
     return data_drilldown_df.loc[data_drilldown_df.Kategorien == category_name.value, 'Stufe'].tolist()[0]
 
 
-
-
 file = "form_results/previsionz_results.xlsx"
 
 # # --- dataframes and spidermap for dimension-Level-representation
-df = pd.read_excel(file)
-number_Participants = len(df.index)
-if number_Participants == 0:
+if not exists(file):
     st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
     st.markdown(textbausteine.intro)
 else:
+    df = pd.read_excel(file)
+    number_Participants = len(df.index)
     print(number_Participants)
     df = transform_to_question_dimension_average_points_df(df)
     st.write(df)
