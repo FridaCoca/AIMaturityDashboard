@@ -10,12 +10,13 @@ import variables as var
 from category import CategoryName
 from network.sharepoint_list_repository import download_list
 
-download_list(
-    list_name="forms_results",
-    export_type="Excel",
-    dir_path="./form_results",
-    file_name="previsionz_results.xlsx"
-)
+
+# download_list(
+#     list_name="test_results",
+#     export_type="Excel",
+#     dir_path="./form_results",
+#     file_name="previsionz_results.xlsx"
+# )
 
 
 def assign_dimensions(df):
@@ -35,27 +36,29 @@ def assign_dimensions(df):
 
 
 def calculate_sum_points(df):
-    for i in range(var.number_Participants):
+    for i in range(number_Participants):
         df[[i]] = df[[i]].astype(str).astype(int)
     df['Punkte'] = df.sum(axis=1)
     return df
 
 
 def calculate_average_points(df):
-    for i in range(var.number_Participants):
+    for i in range(number_Participants):
         df = df.drop([i], axis=1)
-    df['Punkte'] = df['Punkte'].div(var.number_Participants).round(1)
+    df['Punkte'] = df['Punkte'].div(number_Participants).round(1)
     df = df.rename({'Punkte': 'Durchschnitt Punkte'}, axis=1)
     return df
-
 
 def transform_to_question_dimension_average_points_df(df):
     # st.write("----- Print 1 -----")
     # st.write(df) # --- PRINT1
-    df = df.drop(columns=['ID', 'Startzeit', 'Fertigstellungszeit', 'E-Mail', 'Name'])
+    # df = df.drop(columns=['ID', 'Startzeit', 'Fertigstellungszeit', 'E-Mail', 'Name'])
+    df = df.drop(columns=['FileSystemObjectType', 'Id', 'ServerRedirectedEmbedUri', 'ServerRedirectedEmbedUrl', 'ID', 'ContentTypeId','Title','Modified','Created','AuthorId', 'EditorId',
+                          'OData__UIVersionString','Attachments','GUID','ComplianceAssetId','field_1', 'field_3','field_4','field_5','field_6'])
+    # st.write(df)
     df = df.replace(
-        to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'teils teils': '2', 'trifft eher zu': '3',
-                    'trifft zu': '4', 'Ich kann keine Aussage treffen.': '0'})
+        to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'trifft eher  nicht zu': '1', 'teils teils': '2', 'trifft eher zu': '3',
+                    'trifft zu': '4', 'Ich kann keine Aussage treffen.': '0', '<NA>': '0'})
     df = df.transpose()
     # st.write("----- Print 2 -----")
     # st.write(df)
@@ -433,74 +436,80 @@ def get_category_points(category_name: CategoryName):
     return data_drilldown_df.loc[data_drilldown_df.Kategorien == category_name.value, 'Stufe'].tolist()[0]
 
 
-file2 = "survey.xlsx"
+
+
 file = "form_results/previsionz_results.xlsx"
 
-# --- dataframes and spidermap for dimension-Level-representation
-dfTest = pd.read_excel(file2)
-#st.write(dfTest)
+# # --- dataframes and spidermap for dimension-Level-representation
 df = pd.read_excel(file)
-df = transform_to_question_dimension_average_points_df(df)
-dimension_level_df = transform_to_dimension_level_df(df)
-bar_chart_dimension_level_df = px.bar(dimension_level_df, x='Gestaltungsdimension', y='Stufe')
-spider_dimension_level = spidermap(dimension_level_df)
+number_Participants = len(df.index)
+if number_Participants == 0:
+    st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
+    st.markdown(textbausteine.intro)
+else:
+    print(number_Participants)
+    df = transform_to_question_dimension_average_points_df(df)
+    st.write(df)
+    dimension_level_df = transform_to_dimension_level_df(df)
+    bar_chart_dimension_level_df = px.bar(dimension_level_df, x='Gestaltungsdimension', y='Stufe')
+    spider_dimension_level = spidermap(dimension_level_df)
 
-# --- dataframes for dimension drilldown
-tech_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_tech, dics.cat_points_tech,
-                                                     'Technologie')
-data_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_data, dics.cat_points_data, 'Daten')
-processes_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_processes,
-                                                          dics.cat_points_processes, 'Prozesse im Bezug auf KI')
-orga_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_orga, dics.cat_points_orga,
-                                                     'Organisation und Expertise')
+    # --- dataframes for dimension drilldown
+    tech_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_tech, dics.cat_points_tech,
+                                                         'Technologie')
+    data_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_data, dics.cat_points_data, 'Daten')
+    processes_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_processes,
+                                                              dics.cat_points_processes, 'Prozesse im Bezug auf KI')
+    orga_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_orga, dics.cat_points_orga,
+                                                         'Organisation und Expertise')
 
-# create_text2()
+    # create_text2()
 
-# --- points_dimension_lists for the paragraph
-points_orga_list = create_List(df, 'Organisation und Expertise')
-points_data_list = create_List(df, 'Daten')
-points_tech_list = create_List(df, 'Vision, Strategie und Expertise')
-points_tech_list = create_List(df, 'Technologie')
-points_processes_list = create_List(df, 'Organisation und Expertise')
-st.write('---------------------')
-# text_Orga = create_text(points_orga_list, rtm.test_kategorie)
-# st.write(text_Orga)
-st.write('---------------------')
+    # --- points_dimension_lists for the paragraph
+    points_orga_list = create_List(df, 'Organisation und Expertise')
+    points_data_list = create_List(df, 'Daten')
+    points_tech_list = create_List(df, 'Vision, Strategie und Expertise')
+    points_tech_list = create_List(df, 'Technologie')
+    points_processes_list = create_List(df, 'Organisation und Expertise')
+    st.write('---------------------')
+    # text_Orga = create_text(points_orga_list, rtm.test_kategorie)
+    # st.write(text_Orga)
+    st.write('---------------------')
 
-# --- Layout ---
-st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
-st.markdown(textbausteine.intro)
+    # --- Layout ---
+    st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
+    st.markdown(textbausteine.intro)
 
-st.header("KI-Reife über die 4 Dimensionen")
-st.markdown(textbausteine.four_dimensions_intro)
-spider_dimension_level
+    st.header("KI-Reife über die 4 Dimensionen")
+    st.markdown(textbausteine.four_dimensions_intro)
+    spider_dimension_level
 
-st.header("KI-Reife innerhalb der Dimensionen ")
-st.markdown(textbausteine.each_dimension_intro)
+    st.header("KI-Reife innerhalb der Dimensionen ")
+    st.markdown(textbausteine.each_dimension_intro)
 
-st.subheader("Technologie")
-st.markdown(textbausteine.tech_description)
-st.write(px.bar(tech_drilldown_df, x='Kategorien', y='Stufe'))
-st.markdown(textbausteine.tech_level1)
+    st.subheader("Technologie")
+    st.markdown(textbausteine.tech_description)
+    st.write(px.bar(tech_drilldown_df, x='Kategorien', y='Stufe'))
+    st.markdown(textbausteine.tech_level1)
 
-st.subheader("Daten")
-st.markdown(textbausteine.daten_description)
-st.write(px.bar(data_drilldown_df, x='Kategorien', y='Stufe'))
-st.markdown(textbausteine.description_daten_level1)
+    st.subheader("Daten")
+    st.markdown(textbausteine.daten_description)
+    st.write(px.bar(data_drilldown_df, x='Kategorien', y='Stufe'))
+    st.markdown(textbausteine.description_daten_level1)
 
-st.subheader("Organisation und Expertise")
-st.markdown(textbausteine.orga_description)
-st.write(px.bar(orga_drilldown_df, x='Kategorien', y='Stufe'))
+    st.subheader("Organisation und Expertise")
+    st.markdown(textbausteine.orga_description)
+    st.write(px.bar(orga_drilldown_df, x='Kategorien', y='Stufe'))
 
-st.subheader("Prozesse im Bezug auf KI")
-st.markdown(textbausteine.processes_description)
-st.write(px.bar(processes_drilldown_df, x='Kategorien', y='Stufe'))
+    st.subheader("Prozesse im Bezug auf KI")
+    st.markdown(textbausteine.processes_description)
+    st.write(px.bar(processes_drilldown_df, x='Kategorien', y='Stufe'))
 
-# Binary
-print(rtm.binaryCategory.get_statement_result([1, 2, 3, 4, 5, 6, 7]))
+    # Binary
+    print(rtm.binaryCategory.get_statement_result([1, 2, 3, 4, 5, 6, 7]))
 
-# Block
-statement_category_name = rtm.blockCategory.statements[0].category_name
-category_points = get_category_points(statement_category_name)
-print(category_points)
-print(rtm.blockCategory.get_statement_result([category_points]))
+    # Block
+    statement_category_name = rtm.blockCategory.statements[0].category_name
+    category_points = get_category_points(statement_category_name)
+    print(category_points)
+    print(rtm.blockCategory.get_statement_result([category_points]))
