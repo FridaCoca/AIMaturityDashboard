@@ -427,14 +427,14 @@ def create_List(main_df, dimension):
     return col_frage_punkte
 
 
-def create_text(col_frage_punkte: [], kategorie : rtm.Text_Kategorie):
-    text = ""
-    i = 0
-    for x in kategorie.statements:
-        if col_frage_punkte[i] >= 2:
-            text += (x.get_text(2))
-        i += 1
-    return text
+# def create_text(col_frage_punkte: [], kategorie : rtm.Text_Kategorie):
+#     text = ""
+#     i = 0
+#     for x in kategorie.statements:
+#         if col_frage_punkte[i] >= 2:
+#             text += (x.get_text(2))
+#         i += 1
+#     return text
 
 
 def get_category_points(category_name: CategoryName):
