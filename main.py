@@ -427,16 +427,16 @@ def create_List(main_df, dimension):
     return col_frage_punkte
 
 
-# def create_text(col_frage_punkte: [], kategorie : rtm.Text_Kategorie):
-#     text = ""
-#     i = 0
-#     for x in kategorie.statements:
-#         if col_frage_punkte[i] >= 2:
-#             text += (x.get_text(2))
-#         i += 1
-#     return text
-#
-#
+def create_text(col_frage_punkte: [], kategorie : rtm.Text_Kategorie):
+    text = ""
+    i = 0
+    for x in kategorie.statements:
+        if col_frage_punkte[i] >= 2:
+            text += (x.get_text(2))
+        i += 1
+    return text
+
+
 def get_category_points(category_name: CategoryName):
     return data_drilldown_df.loc[data_drilldown_df.Kategorien == category_name.value, 'Stufe'].tolist()[0]
 
@@ -446,13 +446,12 @@ file = "form_results/previsionz_results.xlsx"
 # # --- dataframes and spidermap for dimension-Level-representation
 if not exists(file):
     st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
-    st.markdown(textbausteine.intro)
+    st.markdown(textbausteine.intro_ohne_file)
 else:
     df = pd.read_excel(file)
     number_Participants = len(df.index)
     print(number_Participants)
     df = transform_to_question_dimension_average_points_df(df)
-    st.write(df)
     dimension_level_df = transform_to_dimension_level_df(df)
     bar_chart_dimension_level_df = px.bar(dimension_level_df, x='Gestaltungsdimension', y='Stufe')
     spider_dimension_level = spidermap(dimension_level_df)
@@ -466,7 +465,6 @@ else:
     orga_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_orga, dics.cat_points_orga,
                                                          'Organisation und Expertise')
 
-    # create_text2()
 
     # --- points_dimension_lists for the paragraph
     points_orga_list = create_List(df, 'Organisation und Expertise')

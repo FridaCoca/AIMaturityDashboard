@@ -1,6 +1,8 @@
 #--- intros ---
 intro = """ Herzlichen Glückwunsch zum Abschluss Ihrer KI-Reifeprüfung!
-Diese Seite führt Sie durch die Interpretation Ihrer Bewertungsergebnisse und schließt mit konkretten next Steps ab. """
+Dieser Bericht führt Sie durch die Interpretation Ihrer Bewertungsergebnisse. """
+intro_ohne_file = """ Herzlichen Glückwunsch zum Abschluss Ihrer KI-Reifeprüfung!
+Nachdem sie dem Fragebogen ausgefüllt haben, führt Sie dieser Bericht durch die Interpretation Ihrer Bewertungsergebnisse. """
 four_dimensions_intro = """Hier sehen Sie einen Überblick über den Reifegrad Ihres Unternehmens über die 4 verschiedenen Dimensionen, die vom KI-Reifetool bewertet werden. """
 each_dimension_intro = """Wir wollen nun einen detaillierten Einblick in jede Dimension gewinnen.  """
 # --- descriptions ---
