@@ -12,13 +12,12 @@ import variables as var
 from category import CategoryName
 from network.sharepoint_list_repository import download_list
 
-download_list(
-    list_name="test_results",
-    export_type="Excel",
-    dir_path="./form_results",
-    file_name="previsionz_results.xlsx"
-)
-
+# download_list(
+#     list_name="form_results_list",
+#     export_type="Excel",
+#     dir_path="./form_results",
+#     file_name="results.xlsx"
+# )
 
 def assign_dimensions(df):
     conditions = [
@@ -37,9 +36,15 @@ def assign_dimensions(df):
 
 
 def calculate_sum_points(df):
-    for i in range(number_Participants):
-        df[[i]] = df[[i]].astype(str).astype(int)
+    st.write("in calc points")
+    st.write(df)
+    print(df.dtypes)
+    # for i in range(number_Participants):
+    #     df[[i]] = df[[i]].astype(str).astype(int)
+    df = df.astype({"Punkte": int})
+    st.write(df)
     df['Punkte'] = df.sum(axis=1)
+    print("ok")
     return df
 
 
@@ -50,36 +55,56 @@ def calculate_average_points(df):
     df = df.rename({'Punkte': 'Durchschnitt Punkte'}, axis=1)
     return df
 
-
-def transform_to_question_dimension_average_points_df(df):
+def clean(df):
     # st.write("----- Print 1 -----")
-    # st.write(df) # --- PRINT1
-    # df = df.drop(columns=['ID', 'Startzeit', 'Fertigstellungszeit', 'E-Mail', 'Name'])
+    # st.write(df)
     df = df.drop(columns=['FileSystemObjectType', 'Id', 'ServerRedirectedEmbedUri', 'ServerRedirectedEmbedUrl', 'ID',
                           'ContentTypeId', 'Title', 'Modified', 'Created', 'AuthorId', 'EditorId',
-                          'OData__UIVersionString', 'Attachments', 'GUID', 'ComplianceAssetId', 'field_1', 'field_3',
-                          'field_4', 'field_5', 'field_6'])
-    # st.write(df)
+                          'OData__UIVersionString', 'Attachments', 'GUID', 'ComplianceAssetId',
+                          'field_0', 'field_2'])
     df = df.replace(
         to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'trifft eher  nicht zu': '1',
                     'teils teils': '2', 'trifft eher zu': '3',
                     'trifft zu': '4', 'Ich kann keine Aussage treffen.': '0', '<NA>': '0'})
+    return df
+
+def filter_with_password(df):
+    df_result_search = pd.DataFrame()
+    password_search = st.number_input("password")
+    # st.write(password_search)
+    # df = df.astype({'Password': 'Int64'})
+    # print(df.dtypes)
+    st.button("search")
+    df_result_search = df[df['Password'] == (password_search)]
+    df_result_search = df_result_search.drop(columns=['Password'])
+    st.write("result:")
+    df_result_search = df_result_search.rename(index={0: 'Punkte'})
+    st.write(df_result_search)
+    return df_result_search
+
+
+def transform_to_question_dimension_average_points_df(df):
+    # st.write(df)
+    # st.write("alles gut")
     df = df.transpose()
-    # st.write("----- Print 2 -----")
-    # st.write(df)
+    st.write("----- Print 2 -----")
+    st.write(df)
     df = df.reset_index()
-    df = df.rename({'index': 'Frage'}, axis=1)
-    # st.write("----- Print 3 -----")
-    # st.write(df)
+    st.write(df)
+
+    df = df.rename({'index': 'Frage', '1': 'LOLA' }, axis=1)
+
+    st.write("----- Print 3 -----")
+    st.write(df)
     df = assign_dimensions(df)
-    # st.write("----- Print 4 -----")
-    # st.write(df)
-    df.drop([0, 1], axis=0, inplace=True)
+    st.write("----- Print 4 -----")
+    st.write(df)
+    # df.drop([0, 1], axis=0, inplace=True)
     # st.write("----- Print 5 -----")
     # st.write(df)
     df = calculate_sum_points(df)
-    # st.write("----- Print 6 -----")
-    # st.write(df)
+    st.write("----- Print 6 -----")
+    st.write(df)
     df = calculate_average_points(df)
     return df
 
@@ -441,20 +466,28 @@ def get_category_points(category_name: CategoryName):
     return data_drilldown_df.loc[data_drilldown_df.Kategorien == category_name.value, 'Stufe'].tolist()[0]
 
 
-file = "form_results/previsionz_results.xlsx"
+file = "form_results/results.xlsx"
 
 # # --- dataframes and spidermap for dimension-Level-representation
-if not exists(file):
-    st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
-    st.markdown(textbausteine.intro_ohne_file)
-else:
-    df = pd.read_excel(file)
-    number_Participants = len(df.index)
-    print(number_Participants)
+#if not exists(file):
+    # st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
+    # st.markdown(textbausteine.intro_ohne_file)
+
+df = pd.read_excel(file)
+
+# number_Participants = len(df.index)
+number_Participants = 1
+
+df = clean(df)
+# df = filter_with_password(df)
+st.write("HIER DEBUGGEN WIR:")
+st.write(df)
+if len(df.index) >= 1:
     df = transform_to_question_dimension_average_points_df(df)
     dimension_level_df = transform_to_dimension_level_df(df)
     bar_chart_dimension_level_df = px.bar(dimension_level_df, x='Gestaltungsdimension', y='Stufe')
     spider_dimension_level = spidermap(dimension_level_df)
+    st.write("alles gut1")
 
     # --- dataframes for dimension drilldown
     tech_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_tech, dics.cat_points_tech,
@@ -514,3 +547,5 @@ else:
     category_points = get_category_points(statement_category_name)
     print(category_points)
     print(rtm.blockCategory.get_statement_result([category_points]))
+else:
+    st.write("Bitte password eingeben")

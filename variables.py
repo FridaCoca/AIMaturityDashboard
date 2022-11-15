@@ -1,7 +1,7 @@
 # --- Variables ---
 
 # indices for questions to assign dimension
-f_q_technologie = 2
+f_q_technologie = 0
 l_q_technologie = 16
 f_q_data = 17
 l_q_data = 33
