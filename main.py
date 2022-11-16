@@ -49,6 +49,9 @@ def calculate_sum_points(df):
 
 
 def calculate_average_points(df):
+    st.write("hier BEDUGEGE:")
+    st.write(df)
+
     for i in range(number_Participants):
         df = df.drop([i], axis=1)
     df['Punkte'] = df['Punkte'].div(number_Participants).round(1)
@@ -63,9 +66,9 @@ def clean(df):
                           'OData__UIVersionString', 'Attachments', 'GUID', 'ComplianceAssetId',
                           'field_0', 'field_2'])
     df = df.replace(
-        to_replace={'trifft nicht zu': '0', 'trifft eher nicht zu': '1', 'trifft eher  nicht zu': '1',
-                    'teils teils': '2', 'trifft eher zu': '3',
-                    'trifft zu': '4', 'Ich kann keine Aussage treffen.': '0', '<NA>': '0'})
+        to_replace={'trifft nicht zu': 0, 'trifft eher nicht zu': 1, 'trifft eher  nicht zu': 1,
+                    'teils teils': 2, 'trifft eher zu': 3,
+                    'trifft zu': 4, 'Ich kann keine Aussage treffen.': 0, '<NA>': 0})
     return df
 
 def filter_with_password(df):
@@ -84,28 +87,22 @@ def filter_with_password(df):
 
 
 def transform_to_question_dimension_average_points_df(df):
-    # st.write(df)
-    # st.write("alles gut")
     df = df.transpose()
-    st.write("----- Print 2 -----")
-    st.write(df)
+    #st.write("----- Print 2 -----")
+    df.columns = ["Punkte"]
+    #st.write(df)
     df = df.reset_index()
-    st.write(df)
-
-    df = df.rename({'index': 'Frage', '1': 'LOLA' }, axis=1)
-
-    st.write("----- Print 3 -----")
-    st.write(df)
+    # st.write("----- Print 3 -----")
+    # st.write(df)
+    df = df.drop(['index'], axis=1)
     df = assign_dimensions(df)
-    st.write("----- Print 4 -----")
-    st.write(df)
-    # df.drop([0, 1], axis=0, inplace=True)
+    # st.write("----- Print 4 -----")
+    # st.write(df)
     # st.write("----- Print 5 -----")
     # st.write(df)
-    df = calculate_sum_points(df)
-    st.write("----- Print 6 -----")
-    st.write(df)
-    df = calculate_average_points(df)
+   # df = calculate_sum_points(df)
+   #  st.write("----- Print 6 -----")
+   #  df = calculate_average_points(df)
     return df
 
 
@@ -116,10 +113,6 @@ def assign_levels_in_dimension(df):
                 df['Kategorien'] == 'Daten Hosting')),
         ((df["Punkte"] > var.boundries_daten_hosting[2]) & (df["Punkte"] <= var.boundries_daten_hosting[3]) & (
                 df['Kategorien'] == 'Daten Hosting')),
-        ((df["Punkte"] > var.boundries_daten_hosting[3]) & (df["Punkte"] <= var.boundries_daten_hosting[4]) & (
-                df['Kategorien'] == 'Daten Hosting')),
-        ((df["Punkte"] > var.boundries_daten_hosting[4]) & (df["Punkte"] <= var.boundries_daten_hosting[5]) & (
-                df['Kategorien'] == 'Daten Hosting')),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_modelle_und_werkzeuge[1]) & (
                 df['Kategorien'] == 'Modelle und Werkzeuge')),
@@ -128,12 +121,6 @@ def assign_levels_in_dimension(df):
                 df['Kategorien'] == 'Modelle und Werkzeuge'),
         ((df["Punkte"] > var.boundries_modelle_und_werkzeuge[2]) & (
                 df["Punkte"] <= var.boundries_modelle_und_werkzeuge[3])) & (
-                df['Kategorien'] == 'Modelle und Werkzeuge'),
-        ((df["Punkte"] > var.boundries_modelle_und_werkzeuge[3]) & (
-                df["Punkte"] <= var.boundries_modelle_und_werkzeuge[4])) & (
-                df['Kategorien'] == 'Modelle und Werkzeuge'),
-        ((df["Punkte"] > var.boundries_modelle_und_werkzeuge[4]) & (
-                df["Punkte"] <= var.boundries_modelle_und_werkzeuge[5])) & (
                 df['Kategorien'] == 'Modelle und Werkzeuge'),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_data_warehouse_plattform[1]) & (
@@ -144,12 +131,7 @@ def assign_levels_in_dimension(df):
         ((df["Punkte"] > var.boundries_data_warehouse_plattform[2]) & (
                 df["Punkte"] <= var.boundries_data_warehouse_plattform[3])) & (
                 df['Kategorien'] == 'Data Warehouse Plattform'),
-        ((df["Punkte"] > var.boundries_data_warehouse_plattform[3]) & (
-                df["Punkte"] <= var.boundries_data_warehouse_plattform[4])) & (
-                df['Kategorien'] == 'Data Warehouse Plattform'),
-        ((df["Punkte"] > var.boundries_data_warehouse_plattform[4]) & (
-                df["Punkte"] <= var.boundries_data_warehouse_plattform[5])) & (
-                df['Kategorien'] == 'Data Warehouse Plattform'),
+
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[1]) & (
                 df['Kategorien'] == 'BI Infrastruktur')),
@@ -158,12 +140,6 @@ def assign_levels_in_dimension(df):
                 df['Kategorien'] == 'BI Infrastruktur'),
         ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[2]) & (
                 df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[3])) & (
-                df['Kategorien'] == 'BI Infrastruktur'),
-        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[3]) & (
-                df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[4])) & (
-                df['Kategorien'] == 'BI Infrastruktur'),
-        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[4]) & (
-                df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[5])) & (
                 df['Kategorien'] == 'BI Infrastruktur'),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_data_driven_culture[1]) & (
@@ -174,12 +150,6 @@ def assign_levels_in_dimension(df):
         ((df["Punkte"] > var.boundries_data_driven_culture[2]) & (
                 df["Punkte"] <= var.boundries_data_driven_culture[3]) & (
                  df['Kategorien'] == 'Data Driven Culture')),
-        ((df["Punkte"] > var.boundries_data_driven_culture[3]) & (
-                df["Punkte"] <= var.boundries_data_driven_culture[4]) & (
-                 df['Kategorien'] == 'Data Driven Culture')),
-        ((df["Punkte"] > var.boundries_data_driven_culture[4]) & (
-                df["Punkte"] <= var.boundries_data_driven_culture[5]) & (
-                 df['Kategorien'] == 'Data Driven Culture')),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_datenherkunft_und_haltung[1]) & (
                 df['Kategorien'] == 'Modelle und Werkzeuge')),
@@ -188,12 +158,6 @@ def assign_levels_in_dimension(df):
                 df['Kategorien'] == 'Datenherkunft und -haltung'),
         ((df["Punkte"] > var.boundries_datenherkunft_und_haltung[2]) & (
                 df["Punkte"] <= var.boundries_datenherkunft_und_haltung[3])) & (
-                df['Kategorien'] == 'Datenherkunft und -haltung'),
-        ((df["Punkte"] > var.boundries_datenherkunft_und_haltung[3]) & (
-                df["Punkte"] <= var.boundries_datenherkunft_und_haltung[4])) & (
-                df['Kategorien'] == 'Datenherkunft und -haltung'),
-        ((df["Punkte"] > var.boundries_datenherkunft_und_haltung[4]) & (
-                df["Punkte"] <= var.boundries_datenherkunft_und_haltung[5])) & (
                 df['Kategorien'] == 'Datenherkunft und -haltung'),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_datenqualität[1]) & (
@@ -204,12 +168,7 @@ def assign_levels_in_dimension(df):
         ((df["Punkte"] > var.boundries_datenqualität[2]) & (
                 df["Punkte"] <= var.boundries_datenqualität[3])) & (
                 df['Kategorien'] == 'Datenqualität'),
-        ((df["Punkte"] > var.boundries_datenqualität[3]) & (
-                df["Punkte"] <= var.boundries_datenqualität[4])) & (
-                df['Kategorien'] == 'Datenqualität'),
-        ((df["Punkte"] > var.boundries_datenqualität[4]) & (
-                df["Punkte"] <= var.boundries_datenqualität[5])) & (
-                df['Kategorien'] == 'Datenqualität'),
+
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_datamonitoring_governance_und_policies[1]) & (
                 df['Kategorien'] == 'Datamonitoring, -governance und -policies')),
@@ -218,12 +177,6 @@ def assign_levels_in_dimension(df):
                 df['Kategorien'] == 'Datamonitoring, -governance und -policies'),
         ((df["Punkte"] > var.boundries_datamonitoring_governance_und_policies[2]) & (
                 df["Punkte"] <= var.boundries_datamonitoring_governance_und_policies[3])) & (
-                df['Kategorien'] == 'Datamonitoring, -governance und -policies'),
-        ((df["Punkte"] > var.boundries_datamonitoring_governance_und_policies[3]) & (
-                df["Punkte"] <= var.boundries_datamonitoring_governance_und_policies[4])) & (
-                df['Kategorien'] == 'Datamonitoring, -governance und -policies'),
-        ((df["Punkte"] > var.boundries_datamonitoring_governance_und_policies[4]) & (
-                df["Punkte"] <= var.boundries_datamonitoring_governance_und_policies[5])) & (
                 df['Kategorien'] == 'Datamonitoring, -governance und -policies'),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_rechtliche_grundlagen[1]) & (
@@ -234,12 +187,15 @@ def assign_levels_in_dimension(df):
         ((df["Punkte"] > var.boundries_rechtliche_grundlagen[2]) & (
                 df["Punkte"] <= var.boundries_rechtliche_grundlagen[3])) & (
                 df['Kategorien'] == 'Rechtliche Grundlagen'),
-        ((df["Punkte"] > var.boundries_rechtliche_grundlagen[3]) & (
-                df["Punkte"] <= var.boundries_rechtliche_grundlagen[4])) & (
-                df['Kategorien'] == 'Rechtliche Grundlagen'),
-        ((df["Punkte"] > var.boundries_rechtliche_grundlagen[4]) & (
-                df["Punkte"] <= var.boundries_rechtliche_grundlagen[5])) & (
-                df['Kategorien'] == 'Rechtliche Grundlagen'),
+
+        # ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_ki_vision[1]) & (
+        #         df['Kategorien'] == 'KI-Vision')),
+        # ((df["Punkte"] > var.boundries_ki_vision[1]) & (
+        #         df["Punkte"] <= var.boundries_ki_vision[2])) & (
+        #         df['Kategorien'] == 'KI-Vision'),
+        # ((df["Punkte"] > var.boundries_ki_vision[2]) & (
+        #         df["Punkte"] <= var.boundries_ki_vision[3])) & (
+        #         df['Kategorien'] == 'KI-Vision'),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_bi_expertise[1]) & (
                 df['Kategorien'] == 'BI Expertise')),
@@ -248,12 +204,6 @@ def assign_levels_in_dimension(df):
                 df['Kategorien'] == 'BI Expertise'),
         ((df["Punkte"] > var.boundries_bi_expertise[2]) & (
                 df["Punkte"] <= var.boundries_bi_expertise[3])) & (
-                df['Kategorien'] == 'BI Expertise'),
-        ((df["Punkte"] > var.boundries_bi_expertise[3]) & (
-                df["Punkte"] <= var.boundries_bi_expertise[4])) & (
-                df['Kategorien'] == 'BI Expertise'),
-        ((df["Punkte"] > var.boundries_bi_expertise[4]) & (
-                df["Punkte"] <= var.boundries_bi_expertise[5])) & (
                 df['Kategorien'] == 'BI Expertise'),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[1]) & (
@@ -264,12 +214,6 @@ def assign_levels_in_dimension(df):
         ((df["Punkte"] > var.boundries_bestehende_ki_lösungen_im_unternehmen[2]) & (
                 df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[3])) & (
                 df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen'),
-        ((df["Punkte"] > var.boundries_bestehende_ki_lösungen_im_unternehmen[3]) & (
-                df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[4])) & (
-                df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen'),
-        ((df["Punkte"] > var.boundries_bestehende_ki_lösungen_im_unternehmen[4]) & (
-                df["Punkte"] <= var.boundries_bestehende_ki_lösungen_im_unternehmen[5])) & (
-                df['Kategorien'] == 'Bestehende KI Lösungen im Unternehmen'),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_strategie[1]) & (
                 df['Kategorien'] == 'Strategie')),
@@ -278,12 +222,6 @@ def assign_levels_in_dimension(df):
                 df['Kategorien'] == 'Strategie'),
         ((df["Punkte"] > var.boundries_strategie[2]) & (
                 df["Punkte"] <= var.boundries_strategie[3])) & (
-                df['Kategorien'] == 'Strategie'),
-        ((df["Punkte"] > var.boundries_strategie[3]) & (
-                df["Punkte"] <= var.boundries_strategie[4])) & (
-                df['Kategorien'] == 'Strategie'),
-        ((df["Punkte"] > var.boundries_strategie[4]) & (
-                df["Punkte"] <= var.boundries_strategie[5])) & (
                 df['Kategorien'] == 'Strategie'),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_ki_best_practices[1]) & (
@@ -294,12 +232,6 @@ def assign_levels_in_dimension(df):
         ((df["Punkte"] > var.boundries_ki_best_practices[2]) & (
                 df["Punkte"] <= var.boundries_ki_best_practices[3])) & (
                 df['Kategorien'] == 'KI Best Practices'),
-        ((df["Punkte"] > var.boundries_ki_best_practices[3]) & (
-                df["Punkte"] <= var.boundries_ki_best_practices[4])) & (
-                df['Kategorien'] == 'KI Best Practices'),
-        ((df["Punkte"] > var.boundries_ki_best_practices[4]) & (
-                df["Punkte"] <= var.boundries_ki_best_practices[5])) & (
-                df['Kategorien'] == 'KI Best Practices'),
 
         ((df["Punkte"] > 0) & (df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[1]) & (
                 df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern')),
@@ -308,29 +240,23 @@ def assign_levels_in_dimension(df):
                 df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern'),
         ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[2]) & (
                 df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[3])) & (
-                df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern'),
-        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[3]) & (
-                df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[4])) & (
-                df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern'),
-        ((df["Punkte"] > var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[4]) & (
-                df["Punkte"] <= var.boundries_prozess_zur_identifikation_von_ki_einsatzfeldern[5])) & (
-                df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern'),
+                df['Kategorien'] == 'Prozess zur Identifikation von KI-Einsatzfeldern')
     ]
 
-    values = [1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5]
+    values = [1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3]
 
     df['Stufe'] = np.select(conditions, values)
     df = df.filter(['Kategorien', 'Stufe'], axis=1)
@@ -338,10 +264,11 @@ def assign_levels_in_dimension(df):
 
 
 def transform_to_dimension_level_df(df):
-    df = df.groupby(['Gestaltungsdimension'])['Durchschnitt Punkte'].sum()
-    df = df.reset_index().rename({'Durchschnitt Punkte': 'Punkte Pro Dimension'}, axis=1)
+    df = df.groupby('Gestaltungsdimension').sum()
+    df = df.reset_index().rename({'Punkte': 'Punkte Pro Dimension'}, axis=1)
     df = assign_levels(df)
     df = df.drop(['Punkte Pro Dimension'], axis=1)
+
     return df
 
 
@@ -364,12 +291,6 @@ def assign_levels(df):
         ((df["Punkte Pro Dimension"] > var.upper_bound_tech_level2) & (
                 df["Punkte Pro Dimension"] <= var.upper_bound_tech_level3)) & (
                 df['Gestaltungsdimension'] == 'Technologie'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_tech_level3) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_tech_level4)) & (
-                df['Gestaltungsdimension'] == 'Technologie'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_tech_level4) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_tech_level5)) & (
-                df['Gestaltungsdimension'] == 'Technologie'),
 
         ((df["Punkte Pro Dimension"] > 0) & (df["Punkte Pro Dimension"] <= var.upper_bound_data_level1) & (
                 df['Gestaltungsdimension'] == 'Daten')),
@@ -379,26 +300,14 @@ def assign_levels(df):
         ((df["Punkte Pro Dimension"] > var.upper_bound_data_level2) & (
                 df["Punkte Pro Dimension"] <= var.upper_bound_data_level3)) & (
                 df['Gestaltungsdimension'] == 'Daten'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_data_level3) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_data_level4)) & (
-                df['Gestaltungsdimension'] == 'Daten'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_data_level4) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_data_level5)) & (
-                df['Gestaltungsdimension'] == 'Daten'),
 
-        ((df["Punkte Pro Dimension"] > 0) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level1) & (
+        ((df["Punkte Pro Dimension"] > 0) & (df["Punkte Pro Dimension"] <= var.upper_bound_processes_level1) & (
                 df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI')),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level1) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_orga_level2)) & (
+        ((df["Punkte Pro Dimension"] > var.upper_bound_processes_level1) & (
+                df["Punkte Pro Dimension"] <= var.upper_bound_processes_level2)) & (
                 df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level2) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_orga_level3)) & (
-                df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level3) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_orga_level4)) & (
-                df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level4) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_orga_level5)) & (
+        ((df["Punkte Pro Dimension"] > var.upper_bound_processes_level2) & (
+                df["Punkte Pro Dimension"] <= var.upper_bound_processes_level3)) & (
                 df['Gestaltungsdimension'] == 'Prozesse im Bezug auf KI'),
 
         ((df["Punkte Pro Dimension"] > 0) & (df["Punkte Pro Dimension"] <= var.upper_bound_orga_level1) & (
@@ -408,19 +317,13 @@ def assign_levels(df):
                 df['Gestaltungsdimension'] == 'Organisation und Expertise'),
         ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level2) & (
                 df["Punkte Pro Dimension"] <= var.upper_bound_orga_level3)) & (
-                df['Gestaltungsdimension'] == 'Organisation und Expertise'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level3) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_orga_level4)) & (
-                df['Gestaltungsdimension'] == 'Organisation und Expertise'),
-        ((df["Punkte Pro Dimension"] > var.upper_bound_orga_level4) & (
-                df["Punkte Pro Dimension"] <= var.upper_bound_orga_level5)) & (
                 df['Gestaltungsdimension'] == 'Organisation und Expertise')
     ]
 
-    values = [1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5,
-              1, 2, 3, 4, 5]
+    values = [1, 2, 3,
+              1, 2, 3,
+              1, 2, 3,
+              1, 2, 3]
 
     df['Stufe'] = np.select(conditions, values)
     return df
@@ -428,8 +331,8 @@ def assign_levels(df):
 
 def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_dic, dimension):
     df_kat = main_df[main_df['Gestaltungsdimension'] == dimension]
-    df_kat = df_kat.filter(['Frage', 'Durchschnitt Punkte'], axis=1)
-    col_punkte_kat = df_kat['Durchschnitt Punkte'].tolist()
+    df_kat = df_kat.filter(['Frage', 'Punkte'], axis=1)
+    col_punkte_kat = df_kat['Punkte'].tolist()
 
     for i, p in enumerate(col_punkte_kat):
         k = questions_points_dic[i]
@@ -447,8 +350,8 @@ def transform_to_dimension_drilldown(main_df, questions_points_dic, cat_points_d
 
 def create_List(main_df, dimension):
     df_kat = main_df[main_df['Gestaltungsdimension'] == dimension]
-    df_kat = df_kat.filter(['Frage', 'Durchschnitt Punkte'], axis=1)
-    col_frage_punkte = df_kat['Durchschnitt Punkte'].tolist()
+    df_kat = df_kat.filter(['Frage', 'Punkte'], axis=1)
+    col_frage_punkte = df_kat['Punkte'].tolist()
     return col_frage_punkte
 
 
@@ -480,72 +383,70 @@ number_Participants = 1
 
 df = clean(df)
 # df = filter_with_password(df)
-st.write("HIER DEBUGGEN WIR:")
-st.write(df)
-if len(df.index) >= 1:
-    df = transform_to_question_dimension_average_points_df(df)
-    dimension_level_df = transform_to_dimension_level_df(df)
-    bar_chart_dimension_level_df = px.bar(dimension_level_df, x='Gestaltungsdimension', y='Stufe')
-    spider_dimension_level = spidermap(dimension_level_df)
-    st.write("alles gut1")
-
-    # --- dataframes for dimension drilldown
-    tech_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_tech, dics.cat_points_tech,
-                                                         'Technologie')
-    data_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_data, dics.cat_points_data, 'Daten')
-    processes_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_processes,
-                                                              dics.cat_points_processes, 'Prozesse im Bezug auf KI')
-    orga_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_orga, dics.cat_points_orga,
-                                                         'Organisation und Expertise')
 
 
-    # --- points_dimension_lists for the paragraph
-    points_orga_list = create_List(df, 'Organisation und Expertise')
-    points_data_list = create_List(df, 'Daten')
-    points_tech_list = create_List(df, 'Vision, Strategie und Expertise')
-    points_tech_list = create_List(df, 'Technologie')
-    points_processes_list = create_List(df, 'Organisation und Expertise')
-    st.write('---------------------')
-    # text_Orga = create_text(points_orga_list, rtm.test_kategorie)
-    # st.write(text_Orga)
-    st.write('---------------------')
+df = transform_to_question_dimension_average_points_df(df)
+dimension_level_df = transform_to_dimension_level_df(df)
+bar_chart_dimension_level_df = px.bar(dimension_level_df, x='Gestaltungsdimension', y='Stufe')
+spider_dimension_level = spidermap(dimension_level_df)
 
-    # --- Layout ---
-    st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
-    st.markdown(textbausteine.intro)
 
-    st.header("KI-Reife über die 4 Dimensionen")
-    st.markdown(textbausteine.four_dimensions_intro)
-    spider_dimension_level
+# --- dataframes for dimension drilldown
+tech_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_tech, dics.cat_points_tech,
+                                                     'Technologie')
+data_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_data, dics.cat_points_data, 'Daten')
+processes_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_processes,
+                                                          dics.cat_points_processes, 'Prozesse im Bezug auf KI')
+orga_drilldown_df = transform_to_dimension_drilldown(df, dics.questions_points_orga, dics.cat_points_orga,
+                                                     'Organisation und Expertise')
 
-    st.header("KI-Reife innerhalb der Dimensionen ")
-    st.markdown(textbausteine.each_dimension_intro)
 
-    st.subheader("Technologie")
-    st.markdown(textbausteine.tech_description)
-    st.write(px.bar(tech_drilldown_df, x='Kategorien', y='Stufe'))
-    st.markdown(textbausteine.tech_level1)
+# --- points_dimension_lists for the paragraph
+points_orga_list = create_List(df, 'Organisation und Expertise')
+points_data_list = create_List(df, 'Daten')
+points_tech_list = create_List(df, 'Vision, Strategie und Expertise')
+points_tech_list = create_List(df, 'Technologie')
+points_processes_list = create_List(df, 'Organisation und Expertise')
+st.write('---------------------')
+# text_Orga = create_text(points_orga_list, rtm.test_kategorie)
+# st.write(text_Orga)
+st.write('---------------------')
 
-    st.subheader("Daten")
-    st.markdown(textbausteine.daten_description)
-    st.write(px.bar(data_drilldown_df, x='Kategorien', y='Stufe'))
-    st.markdown(textbausteine.description_daten_level1)
+# --- Layout ---
+st.title(":bar_chart: Ergebnisse KI Reifegradermittlung")
+st.markdown(textbausteine.intro)
 
-    st.subheader("Organisation und Expertise")
-    st.markdown(textbausteine.orga_description)
-    st.write(px.bar(orga_drilldown_df, x='Kategorien', y='Stufe'))
+st.header("KI-Reife über die 4 Dimensionen")
+st.markdown(textbausteine.four_dimensions_intro)
+spider_dimension_level
 
-    st.subheader("Prozesse im Bezug auf KI")
-    st.markdown(textbausteine.processes_description)
-    st.write(px.bar(processes_drilldown_df, x='Kategorien', y='Stufe'))
+st.header("KI-Reife innerhalb der Dimensionen ")
+st.markdown(textbausteine.each_dimension_intro)
 
-    # Binary
-    print(rtm.binaryCategory.get_statement_result([1, 2, 3, 4, 5, 6, 7]))
+st.subheader("Technologie")
+st.markdown(textbausteine.tech_description)
+st.write(px.bar(tech_drilldown_df, x='Kategorien', y='Stufe'))
+st.markdown(textbausteine.tech_level1)
 
-    # Block
-    statement_category_name = rtm.blockCategory.statements[0].category_name
-    category_points = get_category_points(statement_category_name)
-    print(category_points)
-    print(rtm.blockCategory.get_statement_result([category_points]))
-else:
-    st.write("Bitte password eingeben")
+st.subheader("Daten")
+st.markdown(textbausteine.daten_description)
+st.write(px.bar(data_drilldown_df, x='Kategorien', y='Stufe'))
+st.markdown(textbausteine.description_daten_level1)
+
+st.subheader("Organisation und Expertise")
+st.markdown(textbausteine.orga_description)
+st.write(px.bar(orga_drilldown_df, x='Kategorien', y='Stufe'))
+
+st.subheader("Prozesse im Bezug auf KI")
+st.markdown(textbausteine.processes_description)
+st.write(px.bar(processes_drilldown_df, x='Kategorien', y='Stufe'))
+
+# Binary
+print(rtm.binaryCategory.get_statement_result([1, 2, 3, 4, 5, 6, 7]))
+
+# Block
+statement_category_name = rtm.blockCategory.statements[0].category_name
+category_points = get_category_points(statement_category_name)
+print(category_points)
+print(rtm.blockCategory.get_statement_result([category_points]))
+

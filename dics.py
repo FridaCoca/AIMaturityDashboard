@@ -13,13 +13,13 @@ questions_points_tech = {
         11: 'Data Warehouse Plattform',
         12: 'BI Infrastruktur',
         13: 'BI Infrastruktur',
-        14: 'BI Infrastruktur',
+        14: 'BI Infrastruktur'
     }
 cat_points_tech = {
         'Daten Hosting': 0,
         'Modelle und Werkzeuge': 0,
         'Data Warehouse Plattform': 0,
-        'BI Infrastruktur': 0,
+        'BI Infrastruktur': 0
     }
 
 questions_points_data = {
@@ -34,35 +34,43 @@ questions_points_data = {
         8: 'Datenqualität',
         9: 'Datenqualität',
         10: 'Datenqualität',
-        11: 'Datamonitoring, -governance und -policies',
+        11: 'Datenqualität',
         12: 'Datamonitoring, -governance und -policies',
         13: 'Datamonitoring, -governance und -policies',
         14: 'Datamonitoring, -governance und -policies',
-        15: 'Rechtliche Grundlagen',
-        16: 'Rechtliche Grundlagen'
+        15: 'Datamonitoring, -governance und -policies',
+        16: 'Rechtliche Grundlagen',
+        17: 'Rechtliche Grundlagen',
+        18: 'Rechtliche Grundlagen',
+        19: 'Rechtliche Grundlagen'
     }
 cat_points_data = {
         'Data Driven Culture': 0,
         'Datenherkunft und -haltung': 0,
         'Datenqualität': 0,
         'Datamonitoring, -governance und -policies': 0,
-        'Rechtliche Grundlagen': 0,
+        'Rechtliche Grundlagen': 0
     }
 
 questions_points_orga = {
-        0: 'BI Expertise',
-        1: 'BI Expertise',
-        2: 'BI Expertise',
-        3: 'Bestehende KI Lösungen im Unternehmen',
-        4: 'Bestehende KI Lösungen im Unternehmen',
-        5: 'Strategie',
-        6: 'Strategie',
-        7: 'Strategie',
+        0: 'KI-Vision',
+        1: 'KI-Vision',
+        2: 'KI-Vision',
+        3: 'BI Expertise',
+        4: 'BI Expertise',
+        5: 'BI Expertise',
+        6: 'Bestehende KI Lösungen im Unternehmen',
+        7: 'Bestehende KI Lösungen im Unternehmen',
+        8: 'Bestehende KI Lösungen im Unternehmen',
+        9: 'Strategie',
+        10: 'Strategie',
+        11: 'Strategie'
     }
 cat_points_orga = {
+        'KI-Vision': 0,
         'BI Expertise': 0,
         'Bestehende KI Lösungen im Unternehmen': 0,
-        'Strategie': 0,
+        'Strategie': 0
     }
 
 questions_points_processes = {
@@ -71,8 +79,12 @@ questions_points_processes = {
     2: 'Prozess zur Identifikation von KI-Einsatzfeldern',
     3: 'Prozess zur Identifikation von KI-Einsatzfeldern',
     4: 'Prozess zur Identifikation von KI-Einsatzfeldern',
+    5: 'KI Use Cases',
+    6: 'KI Use Cases',
+    7: 'KI Use Cases'
 }
 cat_points_processes = {
     'KI Best Practices': 0,
-    'Prozess zur Identifikation von KI-Einsatzfeldern': 0
+    'Prozess zur Identifikation von KI-Einsatzfeldern': 0,
+    'KI Use Cases': 0
 }

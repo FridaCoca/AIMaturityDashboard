@@ -2,52 +2,57 @@
 
 # indices for questions to assign dimension
 f_q_technologie = 0
-l_q_technologie = 16
-f_q_data = 17
-l_q_data = 33
-f_q_organisation = 34
-l_q_organisation = 41
-f_q_prozesse = 42
-l_q_prozesse = 46
+l_q_technologie = 14
+f_q_data = 15
+l_q_data = 34
+f_q_organisation = 35
+l_q_organisation = 46
+f_q_prozesse = 47
+l_q_prozesse = 54
+
+number_questions_tech = 15
+number_questions_data = 20
+number_questions_orga = 12
+number_questions_processes = 8
+
 # upper and lower bounds to assign level
-upper_bound_tech_level1 = 12
-upper_bound_tech_level2 = 24
-upper_bound_tech_level3 = 36
-upper_bound_tech_level4 = 48
-upper_bound_tech_level5 = 60
+max_points_tech = number_questions_tech*4
+upper_bound_tech_level1 = max_points_tech/3
+upper_bound_tech_level2 = (max_points_tech/3)*2
+upper_bound_tech_level3 = max_points_tech
 
-upper_bound_data_level1 = 13
-upper_bound_data_level2 = 26
-upper_bound_data_level3 = 38
-upper_bound_data_level4 = 51
-upper_bound_data_level5 = 64
+max_points_data = number_questions_data*4
+upper_bound_data_level1 = max_points_data/3
+upper_bound_data_level2 = (max_points_data/3)*2
+upper_bound_data_level3 = max_points_data
 
-upper_bound_orga_level1 = 6
-upper_bound_orga_level2 = 13
-upper_bound_orga_level3 = 19
-upper_bound_orga_level4 = 26
-upper_bound_orga_level5 = 32
+max_points_orga = number_questions_orga*4
+upper_bound_orga_level1 = max_points_orga/3
+upper_bound_orga_level2 = (max_points_orga/3)*2
+upper_bound_orga_level3 = max_points_orga
 
-upper_bound_processes_level1 = 5
-upper_bound_processes_level2 = 10
-upper_bound_processes_level3 = 14
-upper_bound_processes_level4 = 19
-upper_bound_processes_level5 = 24
+max_points_precesses = number_questions_processes*4
+upper_bound_processes_level1 = max_points_precesses/3
+upper_bound_processes_level2 = (max_points_precesses/3)*2
+upper_bound_processes_level3 = max_points_precesses
 
 # boundries to assign level IN dimension
-boundries_daten_hosting = [12, 2.4, 4.8, 7.2, 9.6, 12]
-boundries_modelle_und_werkzeuge	= [20, 4, 8, 12, 16, 20]
-boundries_data_warehouse_plattform = [16, 3.2, 6.4, 9.6, 12.8, 16]
-boundries_bi_infrastruktur = [12, 2.4, 4.8, 7.2, 9.6, 12]
+boundries_daten_hosting = [12, 4, 8, 12]
+boundries_modelle_und_werkzeuge	= [20, 7, 14, 20]
+boundries_data_warehouse_plattform = [16, 5.3, 10.6, 16]
+boundries_bi_infrastruktur = [12, 4, 8, 12]
 
-boundries_data_driven_culture = [16, 3.2, 6.4,	9.6, 12.8, 16]
-boundries_datenherkunft_und_haltung = [12, 2.4, 4.8, 7.2, 9.6, 12]
-boundries_datenqualität = [16, 3.2, 6.4, 9.6, 12.8, 16]
-boundries_datamonitoring_governance_und_policies = [16, 3.2, 6.4, 9.6, 12.8, 16]
+boundries_data_driven_culture = [16, 5.3, 10.6, 16]
+boundries_datenherkunft_und_haltung = [12, 4, 8, 12]
+boundries_datenqualität = [20, 7, 14, 20]
+boundries_datamonitoring_governance_und_policies = [16, 5.3, 10.6, 16]
+boundries_rechtliche_grundlagen = [16, 5.3, 10.6, 16]
 
-boundries_rechtliche_grundlagen = [8, 1.6, 3.2, 4.8, 6.4, 8]
-boundries_bi_expertise = [12, 2.4, 4.8, 7.2, 9.6, 12]
-boundries_bestehende_ki_lösungen_im_unternehmen = [8, 1.6, 3.2, 4.8, 6.4, 8]
-boundries_strategie = [12, 2.4, 4.8, 7.2, 9.6, 12]
-boundries_ki_best_practices = [4, 0.8, 1.6, 2.4, 3.2, 4]
-boundries_prozess_zur_identifikation_von_ki_einsatzfeldern = [16, 3.2, 6.4, 9.6, 12.8, 16]
+boundries_ki_vision = [12, 4, 8, 12]
+boundries_bi_expertise = [12, 4, 8, 12]
+boundries_bestehende_ki_lösungen_im_unternehmen = [12, 4, 8, 12]
+boundries_strategie = [12, 4, 8, 12]
+
+boundries_ki_best_practices = [4, 1, 3, 4]
+boundries_prozess_zur_identifikation_von_ki_einsatzfeldern = [16, 5.3, 10.6, 16]
+boundries_ki_use_cases = [12, 4, 8, 12]
