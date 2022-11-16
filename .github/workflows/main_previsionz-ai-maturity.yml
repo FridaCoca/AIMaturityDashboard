@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'previsionz-ai-maturity'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8FD238C3B07B4E529CBD4D910A31F6CC }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_37A5D6DA39F84EB78650A0F44334D9AC }}
